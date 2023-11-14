@@ -10,7 +10,7 @@ public class BookingKafkaListener {
     
     @KafkaListener(topics = "orderTopic", groupId = "Group1", containerFactory = "factoryBooking")
     public void listenerOrderTopic(Booking booking){
-        System.out.println("=============================================================");
+        System.out.println("==============================================================");
         System.out.println(booking.getDate());
         System.out.println("=============================================================");
     }
