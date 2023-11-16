@@ -19,6 +19,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class BookedDish {
+    @Column(name = "state")
+    private int state;
+    
     @Column(name = "id")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

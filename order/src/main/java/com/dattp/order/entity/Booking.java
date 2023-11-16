@@ -1,7 +1,7 @@
 package com.dattp.order.entity;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,6 +24,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Booking {
+    @Column(name = "state")
+    private int state;
 
     @Column(name="id") @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -39,8 +41,8 @@ public class Booking {
     @Column(name = "desciption")
     private String description;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
-    private Collection<BookedTable> bookedTables;
+    @OneToMany(mappedBy = "booking", cascade ={CascadeType.ALL})
+    private List<BookedTable> bookedTables;
 
     public Booking(){
         super();

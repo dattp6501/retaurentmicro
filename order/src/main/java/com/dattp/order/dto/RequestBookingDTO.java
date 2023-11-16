@@ -1,6 +1,6 @@
 package com.dattp.order.dto;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -12,7 +12,8 @@ import lombok.Getter;
 
 @Getter
 public class RequestBookingDTO {
-
+    private int state;
+    private long id;
     //customer id
     @NotNull(message = "ID khách hàng(customer_id) không được để trống")
     @JsonProperty("customer_id")
@@ -23,7 +24,7 @@ public class RequestBookingDTO {
     @Size(min = 1, message = "Phải có ít nhất 1 bàn được đặt")
     @Valid// kiểm tra các phần tử bên trong danh sách
     // @JsonProperty("tables")
-    private Collection<RequestBookedTableDTO> tables;
+    private List<RequestBookedTableDTO> tables;
 
     private String description;
 

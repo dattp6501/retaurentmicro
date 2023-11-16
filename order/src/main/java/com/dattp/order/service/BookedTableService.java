@@ -14,12 +14,16 @@ public class BookedTableService {
     @Autowired
     private BookedTableRepository bookedTableRepository;
 
-    public void getBookedTable(Date from, Date to){
-        System.out.println(bookedTableRepository.findBookedTable(from, to).size());
+    public List<BookedTable> getBookedTable(Date from, Date to){
+        return bookedTableRepository.findBookedTable(from, to);
     }
 
     public List<BookedTable> saveBookedTable(List<BookedTable> bookedTables){
         return bookedTableRepository.saveAll(bookedTables);
+    }
+
+    public boolean updateState(long id, int state){
+        return bookedTableRepository.updateState(id, state)>0;
     }
 
     

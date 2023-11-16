@@ -8,6 +8,9 @@ import lombok.Getter;
 
 @Getter
 public class RequestBookedDishDTO {
+    private int state;
+    private long id;
+    
     @Min(value = 1, message = "Bạn chưa chọn món(dish_id) hoặc món không tồn tại")
     @JsonProperty("dish_id")
     private long dishId;

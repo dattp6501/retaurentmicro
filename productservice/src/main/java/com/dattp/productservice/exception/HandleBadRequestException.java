@@ -21,7 +21,7 @@ public class HandleBadRequestException {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseDTO hanđleException(BindException e){
         return new ResponseDTO(
-            HttpStatus.BAD_REQUEST.value(), e.getAllErrors().get(0).getDefaultMessage()
+            HttpStatus.BAD_REQUEST.value(), e.getAllErrors().get(0).getDefaultMessage(),null
         );
     }
 
@@ -29,7 +29,7 @@ public class HandleBadRequestException {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseDTO hanđleException(Exception e){
         return new ResponseDTO(
-            HttpStatus.BAD_REQUEST.value(), e.getMessage()
+            HttpStatus.BAD_REQUEST.value(), e.getMessage(),null
         );
     }
 
@@ -37,7 +37,7 @@ public class HandleBadRequestException {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerException(BadRequestException e){
         return new ResponseDTO(
-            HttpStatus.BAD_REQUEST.value(), e.getMessage()
+            HttpStatus.BAD_REQUEST.value(), e.getMessage(),null
         );
     }
 
@@ -45,7 +45,7 @@ public class HandleBadRequestException {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerException(SQLException e){
         return new ResponseDTO(
-            HttpStatus.BAD_REQUEST.value(), e.getMessage()
+            HttpStatus.BAD_REQUEST.value(), e.getMessage(),null
         );
     }
 
@@ -53,7 +53,7 @@ public class HandleBadRequestException {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerException(IOException e){
         return new ResponseDTO(
-            HttpStatus.BAD_REQUEST.value(), e.getMessage()
+            HttpStatus.BAD_REQUEST.value(), e.getMessage(),null
         );
     }
 }
