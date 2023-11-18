@@ -19,4 +19,22 @@ public class ResponseBookedDishDTO {
     }
     public ResponseBookedDishDTO() {
     }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (id ^ (id >>> 32));
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof ResponseBookedDishDTO))
+            return false;
+        ResponseBookedDishDTO other = (ResponseBookedDishDTO) obj;
+        if (id != other.id)
+            return false;
+        return true;
+    }
 }

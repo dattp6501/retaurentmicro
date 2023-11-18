@@ -30,4 +30,22 @@ public class ResponseBookedTableDTO {
     }
     public ResponseBookedTableDTO() {
     }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (id ^ (id >>> 32));
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof ResponseBookedTableDTO))
+            return false;
+        ResponseBookedTableDTO other = (ResponseBookedTableDTO) obj;
+        if (id != other.id)
+            return false;
+        return true;
+    }
 }

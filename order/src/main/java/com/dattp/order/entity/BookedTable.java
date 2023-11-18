@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,11 +47,11 @@ public class BookedTable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date to;
 
-    @OneToMany(mappedBy="table", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="table", cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<BookedDish> dishs;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name ="booking_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="booking_id")
     private Booking booking;
     
     public BookedTable(){}

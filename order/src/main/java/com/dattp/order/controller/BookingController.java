@@ -125,11 +125,20 @@ public class BookingController {
 
     @GetMapping("/get_all_booking")
     public ResponseEntity<ResponseDTO> getByCustemerID(@RequestHeader("access_token") String accessToken){
+        List<ResponseBookingDTO> list = new ArrayList<>();
+        List<Booking> listBK = bookingService.getByCustemerID(1);
+        if(listBK!=null && !listBK.isEmpty()){
+            for(Booking bk : listBK){
+                ResponseBookingDTO bkDTO = new ResponseBookingDTO();
+                BeanUtils.copyProperties(bk, bkDTO);
+                list.add(bkDTO);
+            }
+        }
         return ResponseEntity.ok().body(
             new ResponseDTO(
                 HttpStatus.OK.value(), 
                 "Thành công",
-                bookingService.getByCustemerID(1) 
+                list
             )
         );
     }

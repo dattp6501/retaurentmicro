@@ -13,4 +13,16 @@ public class BookedDishService {
     public boolean updateState(long id, int state){
         return bookedDishRepository.updateState(id, state)>0;
     }
+
+    public void removeById(long id){
+        bookedDishRepository.deleteById(id);
+    }
+
+    public int removeAllByBookedTableID(Long bookedTableId){
+        return bookedDishRepository.removeAllByBookedTableID(bookedTableId);
+    }
+
+    public boolean existsById(long id){
+        return bookedDishRepository.existsById(id);
+    }
 }

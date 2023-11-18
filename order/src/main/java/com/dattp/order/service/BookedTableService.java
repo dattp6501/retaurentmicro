@@ -22,9 +22,15 @@ public class BookedTableService {
         return bookedTableRepository.saveAll(bookedTables);
     }
 
-    public boolean updateState(long id, int state){
+    public boolean updateState(Long id, Integer state){
         return bookedTableRepository.updateState(id, state)>0;
     }
 
-    
+    public void removeById(Long id){
+        bookedTableRepository.deleteById(id);
+    }
+
+    public boolean existsById(long id){
+        return bookedTableRepository.existsById(id);
+    }
 }

@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dattp.productservice.config.GlobalConfig;
 import com.dattp.productservice.entity.Dish;
 import com.dattp.productservice.exception.BadRequestException;
 import com.dattp.productservice.repository.DishRepository;
@@ -38,6 +39,7 @@ public class DishService {
         int index = 1;
         while(it.hasNext()) {
             Dish dish = new Dish();
+            dish.setState(GlobalConfig.OK_STATE);
             Row row = it.next();
             for(int i=0; i<3; i++){
                 if(i==COLUMN_INDEX_NAME){
@@ -77,5 +79,8 @@ public class DishService {
     }
     public List<Dish> getAll(){
         return dishRepository.findAll();
+    }
+    public Dish getById(long id){
+        return dishRepository.findById(id).orElse(null);
     }
 }

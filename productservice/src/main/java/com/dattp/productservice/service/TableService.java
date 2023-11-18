@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dattp.productservice.config.GlobalConfig;
 import com.dattp.productservice.entity.TableE;
 import com.dattp.productservice.exception.BadRequestException;
 import com.dattp.productservice.repository.TableRepository;
@@ -51,6 +52,7 @@ public class TableService {
         while(it.hasNext()) {
             Row row = it.next();
             TableE table = new TableE();
+            table.setState(GlobalConfig.OK_STATE);
             for(int i=0; i<4; i++){
                 if(i==COLUMN_INDEX_NAME){
                     if(row.getCell(i)==null || row.getCell(i).getStringCellValue().equals("")) {

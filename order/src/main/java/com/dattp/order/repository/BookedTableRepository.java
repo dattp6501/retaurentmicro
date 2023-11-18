@@ -19,5 +19,5 @@ public interface BookedTableRepository extends JpaRepository<BookedTable,Long>{
     @Query(value="UPDATE BOOKED_TABLE t "
     +"SET t.state = :state "
     +"WHERE t.id = :id ", nativeQuery = true)
-    public int updateState(@Param("id") long id, @Param("state") int state);
+    public int updateState(@Param("id") Long id, @Param("state") Integer state);
 }
