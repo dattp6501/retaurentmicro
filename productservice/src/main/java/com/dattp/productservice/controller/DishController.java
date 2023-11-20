@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dattp.productservice.dto.RequestDishDTO;
+import com.dattp.productservice.dto.DishRequestDTO;
 import com.dattp.productservice.dto.ResponseDTO;
-import com.dattp.productservice.dto.ResponseDishDTO;
+import com.dattp.productservice.dto.DishResponseDTO;
 import com.dattp.productservice.entity.Dish;
 import com.dattp.productservice.service.DishService;
 
@@ -30,13 +30,13 @@ public class DishController {
     private DishService dishService;
 
     @PostMapping("/save")
-    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid RequestDishDTO dishR){
+    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid DishRequestDTO dishR){
         Dish dish = new Dish();
         dish.setName(dishR.getName());
         dish.setPrice(dishR.getPrice());
         dish.setDiscription(dishR.getDiscription());
         dish = dishService.save(dish);
-        ResponseDishDTO dishDTO = new ResponseDishDTO();
+        DishResponseDTO dishDTO = new DishResponseDTO();
         BeanUtils.copyProperties(dish, dishDTO);
         return ResponseEntity.ok().body(
             new ResponseDTO(HttpStatus.OK.value(),

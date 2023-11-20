@@ -6,9 +6,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.dattp.productservice.config.GlobalConfig;
-import com.dattp.productservice.dto.RequestBookedDishKafkaDTO;
-import com.dattp.productservice.dto.RequestBookedTableKafkaDTO;
-import com.dattp.productservice.dto.RequestBookingKafkaDTO;
+import com.dattp.productservice.dto.BookedDishRequestKafkaDTO;
+import com.dattp.productservice.dto.BookedTableRequestKafkaDTO;
+import com.dattp.productservice.dto.BookingRequestKafkaDTO;
 import com.dattp.productservice.entity.Dish;
 import com.dattp.productservice.entity.TableE;
 import com.dattp.productservice.service.DishService;
@@ -23,14 +23,14 @@ public class KafkaBookingListener {
     private DishService dishService;
 
     @Autowired
-    private KafkaTemplate<String,RequestBookingKafkaDTO> kafkaTemplateBooking;
+    private KafkaTemplate<String,BookingRequestKafkaDTO> kafkaTemplateBooking;
 
     @KafkaListener(topics="newOrder", groupId="group1",containerFactory="factoryBooking")
-    public void listenCreateBookingTopic(RequestBookingKafkaDTO bookingReuqest){
+    public void listenCreateBookingTopic(BookingRequestKafkaDTO bookingReuqest){
         System.out.println("=========================LISTEN NEW ORDER======================================");
         System.out.println(bookingReuqest.getDate());
         // cap nhat,gui lai trang thai ban, mon cua don hang
-        for(RequestBookedTableKafkaDTO table : bookingReuqest.getBookedTables()){
+        for(BookedTableRequestKafkaDTO table : bookingReuqest.getBookedTables()){
             TableE tableSrc = tableService.getById(table.getTableId());
             if(tableSrc==null){//ban khong ton tai
                 table.setState(GlobalConfig.NOT_FOUND_STATE);
@@ -39,7 +39,7 @@ public class KafkaBookingListener {
             table.setState(tableSrc.getState());
             // mon
             if(table.getDishs()==null) continue;
-            for(RequestBookedDishKafkaDTO dish : table.getDishs()){
+            for(BookedDishRequestKafkaDTO dish : table.getDishs()){
                 Dish dishSrc = dishService.getById(dish.getId());
                 if(dishSrc==null){
                     dish.setState(GlobalConfig.NOT_FOUND_STATE);

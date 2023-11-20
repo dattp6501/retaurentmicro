@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 @Getter
-public class RequestDishDTO {
+public class DishRequestDTO {
     @NotNull(message = "Thiếu trường dữ liệu name(tên món ăn) khi gửi đi")
     @NotEmpty(message = "Trường name(tên món ăn) không được để trống")
     private String name;

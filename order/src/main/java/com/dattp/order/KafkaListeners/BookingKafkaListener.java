@@ -15,6 +15,7 @@ public class BookingKafkaListener {
 
     @KafkaListener(topics = "checkOrder", groupId="group1", containerFactory = "factoryBooking")
     public void listenerResultCreateBookingTopic(@Payload BookingResponseDTO bookingResponse){
+        // ket qua nhan vao la trang thai cua ban,mon sau khi productservice kiem tra trang thai cua ban,mon
         System.out.println("=====================LISTEN RESULT CHECK ORDER=========================");
         System.out.println(bookingResponse.getDate());
         // lang nghe su kien kiem tra don dat hang

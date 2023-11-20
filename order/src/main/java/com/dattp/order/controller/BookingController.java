@@ -75,7 +75,7 @@ public class BookingController {
                     dish.setState(ApplicationConfig.DEFAULT_STATE);
                     dish.setTable(table);
                     if(dishs.contains(dish)){
-                        throw new BadRequestException("Món ăn có id = "+dish.getDishID()+" bị trùng");
+                        throw new BadRequestException("Món ăn có id = "+dish.getDishId()+" bị trùng");
                     }
                     dishs.add(dish);
                 }

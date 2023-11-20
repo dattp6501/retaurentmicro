@@ -17,7 +17,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-import com.dattp.productservice.dto.RequestBookingKafkaDTO;
+import com.dattp.productservice.dto.BookingRequestKafkaDTO;
 ;
 @EnableKafka
 @Configuration
@@ -35,14 +35,14 @@ public class KafkaComsumerConfig {
         return props;
     }
     @Bean
-    public ConsumerFactory<String,RequestBookingKafkaDTO> consumerFactoryBooking(){
-        JsonDeserializer<RequestBookingKafkaDTO> jsonDeserializernew = new JsonDeserializer<>(RequestBookingKafkaDTO.class, false);
+    public ConsumerFactory<String,BookingRequestKafkaDTO> consumerFactoryBooking(){
+        JsonDeserializer<BookingRequestKafkaDTO> jsonDeserializernew = new JsonDeserializer<>(BookingRequestKafkaDTO.class, false);
         jsonDeserializernew.addTrustedPackages("*");
         return new DefaultKafkaConsumerFactory<>(comsumerConfigBooking(),new StringDeserializer(), jsonDeserializernew);
     }
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,RequestBookingKafkaDTO>> factoryBooking(ConsumerFactory<String,RequestBookingKafkaDTO> consumerFactoryBooking){
-        ConcurrentKafkaListenerContainerFactory<String,RequestBookingKafkaDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,BookingRequestKafkaDTO>> factoryBooking(ConsumerFactory<String,BookingRequestKafkaDTO> consumerFactoryBooking){
+        ConcurrentKafkaListenerContainerFactory<String,BookingRequestKafkaDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryBooking);
         return factory;
     } 

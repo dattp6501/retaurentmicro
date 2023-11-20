@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseTableDTO{
+public class TableResponseDTO{
     private int state;
 
     private long id;
@@ -18,7 +18,7 @@ public class ResponseTableDTO{
 
     private String desciption;
 
-    public ResponseTableDTO(int state, long id, String name, int amountOfPeople, float price, String desciption) {
+    public TableResponseDTO(int state, long id, String name, int amountOfPeople, float price, String desciption) {
         this.state = state;
         this.id = id;
         this.name = name;
@@ -27,6 +27,6 @@ public class ResponseTableDTO{
         this.desciption = desciption;
     }
 
-    public ResponseTableDTO() {
+    public TableResponseDTO() {
     }
 }

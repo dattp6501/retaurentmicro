@@ -11,8 +11,9 @@ D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-producer.bat --topic createB
 
 D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic newOrder --from-beginning --bootstrap-server localhost:9092
 
-D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic resultCheckBookingTopic --from-beginning --bootstrap-server localhost:9092
+D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic checkOrder --from-beginning --bootstrap-server localhost:9092
 
+D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic notiOrder --from-beginning --bootstrap-server localhost:9092
 
 # referrence
 https://www.youtube.com/watch?v=SqVfCyfCJqw

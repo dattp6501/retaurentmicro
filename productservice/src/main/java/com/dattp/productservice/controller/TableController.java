@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dattp.productservice.config.GlobalConfig;
-import com.dattp.productservice.dto.RequestTableDTO;
+import com.dattp.productservice.dto.TableRequestDTO;
 import com.dattp.productservice.dto.ResponseDTO;
-import com.dattp.productservice.dto.ResponseTableDTO;
+import com.dattp.productservice.dto.TableResponseDTO;
 import com.dattp.productservice.entity.TableE;
 import com.dattp.productservice.service.TableService;
 
@@ -31,7 +31,7 @@ public class TableController {
     private TableService tableService;
 
     @PostMapping(value = "/save")
-    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid RequestTableDTO tableR){
+    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid TableRequestDTO tableR){
         TableE table = new TableE();
         table.setState(GlobalConfig.DEFAULT_STATE);
         table.setName(tableR.getName());
@@ -39,7 +39,7 @@ public class TableController {
         table.setPrice(tableR.getPrice());
         table.setDesciption(tableR.getDesciption());
         table = tableService.saveTable(table);
-        ResponseTableDTO tableDTO = new ResponseTableDTO();
+        TableResponseDTO tableDTO = new TableResponseDTO();
         BeanUtils.copyProperties(table, tableDTO);
         return ResponseEntity.ok().body(
             new ResponseDTO(

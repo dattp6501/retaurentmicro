@@ -13,7 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import com.dattp.productservice.dto.RequestBookingKafkaDTO;
+import com.dattp.productservice.dto.BookingRequestKafkaDTO;
 
 
 @Configuration
@@ -39,11 +39,11 @@ public class KafkaProducerConfig {
     }
     // producer booking
     @Bean
-    public ProducerFactory<String,RequestBookingKafkaDTO> producerFactoryBooking(){
+    public ProducerFactory<String,BookingRequestKafkaDTO> producerFactoryBooking(){
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
     @Bean
-    public KafkaTemplate<String,RequestBookingKafkaDTO> kafkaTemplateBooking(ProducerFactory<String,RequestBookingKafkaDTO> producerFactory){
+    public KafkaTemplate<String,BookingRequestKafkaDTO> kafkaTemplateBooking(ProducerFactory<String,BookingRequestKafkaDTO> producerFactory){
         return new KafkaTemplate<>(producerFactory);
     }
 }

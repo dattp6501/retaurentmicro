@@ -5,18 +5,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestBookedDishKafkaDTO {
+public class BookedDishRequestKafkaDTO {
     private int state;
     private long id;
-    private long dishID;
+    private long dishId;
     private int total;
     private float price;
-    public RequestBookedDishKafkaDTO(long id, long dishID, int total, float price) {
+    public BookedDishRequestKafkaDTO(long id, long dishId, int total, float price) {
         this.id = id;
-        this.dishID = dishID;
+        this.dishId = dishId;
         this.total = total;
         this.price = price;
     }
-    public RequestBookedDishKafkaDTO() {
+    public BookedDishRequestKafkaDTO() {
     }
 }

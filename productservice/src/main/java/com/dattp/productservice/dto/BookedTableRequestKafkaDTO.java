@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestBookedTableKafkaDTO {
+public class BookedTableRequestKafkaDTO {
     private int state;
     private long id;
     private long tableId;
@@ -21,8 +21,8 @@ public class RequestBookedTableKafkaDTO {
     
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date to;
-    private Collection<RequestBookedDishKafkaDTO> dishs;
-    public RequestBookedTableKafkaDTO(long id, long tableId, float price, Date from, Date to, Collection<RequestBookedDishKafkaDTO> dishs) {
+    private Collection<BookedDishRequestKafkaDTO> dishs;
+    public BookedTableRequestKafkaDTO(long id, long tableId, float price, Date from, Date to, Collection<BookedDishRequestKafkaDTO> dishs) {
         this.id = id;
         this.tableId = tableId;
         this.price = price;
@@ -30,6 +30,6 @@ public class RequestBookedTableKafkaDTO {
         this.to = to;
         this.dishs = dishs;
     }
-    public RequestBookedTableKafkaDTO() {
+    public BookedTableRequestKafkaDTO() {
     }
 }
