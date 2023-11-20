@@ -22,7 +22,6 @@ public class GatewayConfig {
                 .route("notifitationservice", r -> r.path("/api/notification/**")
                         // .filters(f -> f.filter(filter))
                         .uri("lb://notifitationservice"))
-
                 .route("productservice", r -> r.path("/api/product/**")
                         // .filters(f -> f.filter(filter))
                         .uri("lb://productservice"))

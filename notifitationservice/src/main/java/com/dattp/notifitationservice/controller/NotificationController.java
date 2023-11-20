@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dattp.notifitationservice.config.Global;
+import com.dattp.notifitationservice.config.ApplicationConfig;
 import com.dattp.notifitationservice.service.SendMailService;
 
 @RestController
@@ -36,17 +36,17 @@ public class NotificationController {
 
             String result = sendMailService.sendOutlook(from, password, to, subTitle, content);
             if(result.equals("OK")){
-                respData.put("code", Global.OK);
-                status = Global.HTTP_STATUS_OK;
+                respData.put("code", ApplicationConfig.OK);
+                status = ApplicationConfig.HTTP_STATUS_OK;
             }else{
-                respData.put("code", Global.DEFAULT);
-                status = Global.HTTP_STATUS_INTERNAL_SERVER_ERROR;
+                respData.put("code", ApplicationConfig.DEFAULT);
+                status = ApplicationConfig.HTTP_STATUS_INTERNAL_SERVER_ERROR;
             }
             respData.put("description", result);
         } catch (JSONException e) {
-            respData.put("code", Global.DEFAULT);
+            respData.put("code", ApplicationConfig.DEFAULT);
             respData.put("description", e.getMessage());
-            status = Global.HTTP_STATUS_BAD_REQUEST;
+            status = ApplicationConfig.HTTP_STATUS_BAD_REQUEST;
         }
         return new ResponseEntity<>(respData.toString(), status);
     }

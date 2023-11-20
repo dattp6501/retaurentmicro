@@ -1,4 +1,4 @@
-package com.dattp.notifitationservice.email;
+package com.dattp.notifitationservice.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;

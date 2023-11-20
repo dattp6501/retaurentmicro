@@ -1,4 +1,4 @@
-package com.dattp.productservice.config;
+package com.dattp.notifitationservice.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
@@ -8,11 +8,7 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
     @Bean
-    public NewTopic productTopic(){
-        return TopicBuilder.name("checkOrder").build();
-    }
-    @Bean
-    public NewTopic newOrderTopic(){
-        return TopicBuilder.name("newOrder").build();
+    public NewTopic newUserTopic(){
+        return TopicBuilder.name("new-user").build();
     }
 }

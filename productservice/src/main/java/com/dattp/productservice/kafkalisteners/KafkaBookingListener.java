@@ -45,7 +45,7 @@ public class KafkaBookingListener {
                     dish.setState(GlobalConfig.NOT_FOUND_STATE);
                     continue;
                 }
-                dish.setState(dish.getState());
+                dish.setState(dishSrc.getState());
             }
         }
         kafkaTemplateBooking.send("checkOrder",bookingReuqest);

@@ -113,7 +113,7 @@ public class BookingController {
             }
             responseBookingDTO.getBookedTables().add(tableDTO);
         }
-        kafkaTemplateBooking.send("createBookingTopic",responseBookingDTO);
+        kafkaTemplateBooking.send("newOrder",responseBookingDTO);
         return ResponseEntity.ok().body(
             new ResponseDTO(
                 HttpStatus.OK.value(),

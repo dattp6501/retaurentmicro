@@ -9,12 +9,12 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaTopicConfig {
     @Bean
     public NewTopic createBookingTopic(){
-        return TopicBuilder.name("createBookingTopic").build();
+        return TopicBuilder.name("newOrder").build();
     }
 
     @Bean
     public NewTopic resultCheckBookingTopic(){
-        return TopicBuilder.name("resultCheckBookingTopic").build();
+        return TopicBuilder.name("checkOrder").build();
     }
 
     @Bean

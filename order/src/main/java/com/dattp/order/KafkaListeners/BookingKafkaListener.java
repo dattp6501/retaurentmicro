@@ -13,13 +13,13 @@ public class BookingKafkaListener {
     @Autowired
     private BookingService bookingService;
 
-    // @KafkaListener(topics = "checkOrder", groupId="group1", containerFactory = "factoryBooking")
-    // public void listenerResultCreateBookingTopic(@Payload ResponseBookingDTO bookingResponse){
-    //     System.out.println("=====================LISTEN RESULT CHECK ORDER=========================");
-    //     System.out.println(bookingResponse.getDate());
-    //     // lang nghe su kien kiem tra don dat hang
-    //     bookingService.checkAndUpdateBooking(bookingResponse);
-    //     System.out.println("UPDATE BOOKING SUCCESS");
-    //     System.out.println("=========================================================================");
-    // }
+    @KafkaListener(topics = "checkOrder", groupId="group1", containerFactory = "factoryBooking")
+    public void listenerResultCreateBookingTopic(@Payload ResponseBookingDTO bookingResponse){
+        System.out.println("=====================LISTEN RESULT CHECK ORDER=========================");
+        System.out.println(bookingResponse.getDate());
+        // lang nghe su kien kiem tra don dat hang
+        bookingService.checkAndUpdateBooking(bookingResponse);
+        System.out.println("UPDATE BOOKING SUCCESS");
+        System.out.println("=========================================================================");
+    }
 }

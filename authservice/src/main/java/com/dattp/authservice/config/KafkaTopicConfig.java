@@ -1,4 +1,4 @@
-package com.dattp.productservice.config;
+package com.dattp.authservice.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
@@ -8,11 +8,12 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
     @Bean
-    public NewTopic productTopic(){
-        return TopicBuilder.name("checkOrder").build();
+    public NewTopic newUserTopic(){
+        return TopicBuilder.name("new-user").build();
     }
+
     @Bean
-    public NewTopic newOrderTopic(){
-        return TopicBuilder.name("newOrder").build();
+    public NewTopic verifiUserTopic(){
+        return TopicBuilder.name("verifi-user").build();
     }
 }
