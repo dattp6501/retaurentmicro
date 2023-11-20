@@ -14,7 +14,7 @@ import lombok.Getter;
 
 
 @Getter
-public class RequestBookedTableDTO {
+public class BookedTableRequestDTO {
     private int state;
     private long id;
     @Min(value = 1, message = "Bàn(table_id) chưa được chọn or không tồn tại")  
@@ -34,5 +34,5 @@ public class RequestBookedTableDTO {
 
     @Valid
     // @JsonProperty("dishs")
-    private List<RequestBookedDishDTO> dishs;
+    private List<BookedDishRequestDTO> dishs;
 }

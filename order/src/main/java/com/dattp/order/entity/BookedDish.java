@@ -28,7 +28,7 @@ public class BookedDish {
     private long id;
 
     @Column(name="dish_id")
-    private long dishID;
+    private long dishId;
 
     @Column(name="total")
     private int total;
@@ -44,23 +44,9 @@ public class BookedDish {
     public BookedDish(){}
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (dishID ^ (dishID >>> 32));
-        return result;
-    }
-
-    @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof BookedDish))
-            return false;
         BookedDish other = (BookedDish) obj;
-        if (dishID != other.dishID)
-            return false;
-        return true;
+        return this.id == other.id;
     }
 
 }

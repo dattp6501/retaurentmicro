@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestTableDTO {
+public class TableRequestDTO {
     
     private long id;
 

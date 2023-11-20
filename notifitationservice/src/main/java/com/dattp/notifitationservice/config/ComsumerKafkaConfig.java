@@ -20,7 +20,7 @@ import com.dattp.notifitationservice.dto.UserRequestKafkaDTO;
 
 @Configuration
 @EnableKafka
-public class UserComsumerConfig {
+public class ComsumerKafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String BOOTSTRAP_SERVERS;
     // 

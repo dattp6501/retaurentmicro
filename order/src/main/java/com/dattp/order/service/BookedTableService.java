@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dattp.order.entity.BookedTable;
+import com.dattp.order.exception.NotfoundException;
 import com.dattp.order.repository.BookedTableRepository;
 
 @Service
@@ -32,5 +33,19 @@ public class BookedTableService {
 
     public boolean existsById(long id){
         return bookedTableRepository.existsById(id);
+    }
+
+    // neu co ban da duoc dat trong khoang thoi gian nay thi tra ve true, nguoc lai tra ve false
+    public boolean isFreetime(BookedTable bookedTable){
+        List<BookedTable> list = bookedTableRepository.findBookedTable(bookedTable.getFrom(),bookedTable.getTo(), bookedTable.getTableId());
+        System.out.println(list);
+        if(list==null) return true;
+        return list.size()<=0;
+    }
+
+    public void delete(Long id){
+        BookedTable bt = bookedTableRepository.findById(id).orElse(null);
+        if(bt==null) throw new NotfoundException("Bàn đặt không tồn tại");
+        bookedTableRepository.delete(bt);
     }
 }

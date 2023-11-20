@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
-public class KafkaTopicConfig {
+public class TopicKafkaConfig {
     @Bean
     public NewTopic createBookingTopic(){
         return TopicBuilder.name("newOrder").build();
@@ -18,7 +18,7 @@ public class KafkaTopicConfig {
     }
 
     @Bean
-    public NewTopic testTopic(){
-        return TopicBuilder.name("testTopic").build();
+    public NewTopic notificationOrderTopic(){
+        return TopicBuilder.name("notiOrder").build();
     }
 }

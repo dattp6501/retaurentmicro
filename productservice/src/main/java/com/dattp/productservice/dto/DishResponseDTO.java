@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseDishDTO {
+public class DishResponseDTO {
     private int state;
 
     private long id;
@@ -16,7 +16,7 @@ public class ResponseDishDTO {
 
     private String discription;
 
-    public ResponseDishDTO(int state, long id, String name, float price, String discription) {
+    public DishResponseDTO(int state, long id, String name, float price, String discription) {
         this.state = state;
         this.id = id;
         this.name = name;
@@ -24,6 +24,6 @@ public class ResponseDishDTO {
         this.discription = discription;
     }
 
-    public ResponseDishDTO() {
+    public DishResponseDTO() {
     }
 }

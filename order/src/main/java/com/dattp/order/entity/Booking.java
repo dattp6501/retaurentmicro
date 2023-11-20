@@ -6,15 +6,11 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -45,8 +41,7 @@ public class Booking {
     @Column(name = "desciption")
     private String description;
 
-    @OneToMany(mappedBy = "booking", cascade ={CascadeType.ALL}, fetch = FetchType.LAZY)
-    @Fetch(value = FetchMode.SELECT)
+    @OneToMany(mappedBy = "booking", cascade ={CascadeType.ALL}, orphanRemoval = true)
     private List<BookedTable> bookedTables;
 
     public Booking(){

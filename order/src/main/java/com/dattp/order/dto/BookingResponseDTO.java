@@ -10,13 +10,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseBookingDTO {
+public class BookingResponseDTO {
     private int state;
     private long id;
     private long CustomerId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
     private String description;
-    private List<ResponseBookedTableDTO> bookedTables;
-    public ResponseBookingDTO(){}
+    private List<BookedTableResponseDTO> bookedTables;
+    public BookingResponseDTO(){}
 }

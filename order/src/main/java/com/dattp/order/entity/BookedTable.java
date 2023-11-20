@@ -47,7 +47,7 @@ public class BookedTable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date to;
 
-    @OneToMany(mappedBy="table", cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="table", cascade={CascadeType.ALL}, orphanRemoval = true)
     private List<BookedDish> dishs;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,23 +55,10 @@ public class BookedTable {
     private Booking booking;
     
     public BookedTable(){}
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (tableId ^ (tableId >>> 32));
-        return result;
-    }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof BookedTable))
-            return false;
         BookedTable other = (BookedTable) obj;
-        if (tableId != other.tableId)
-            return false;
-        return true;
+        return this.tableId == other.tableId;
     }
 }

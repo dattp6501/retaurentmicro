@@ -4,13 +4,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dattp.order.config.GlobalConfig;
-import com.dattp.order.dto.RequestBookedDishDTO;
-import com.dattp.order.dto.RequestBookedTableDTO;
-import com.dattp.order.dto.RequestBookingDTO;
-import com.dattp.order.dto.ResponseBookedDishDTO;
-import com.dattp.order.dto.ResponseBookedTableDTO;
-import com.dattp.order.dto.ResponseBookingDTO;
+import com.dattp.order.config.ApplicationConfig;
+import com.dattp.order.dto.BookedDishRequestDTO;
+import com.dattp.order.dto.BookedTableRequestDTO;
+import com.dattp.order.dto.BookingRequestDTO;
+import com.dattp.order.dto.BookedDishResponseDTO;
+import com.dattp.order.dto.BookedTableResponseDTO;
+import com.dattp.order.dto.BookingResponseDTO;
 import com.dattp.order.dto.ResponseDTO;
 import com.dattp.order.entity.BookedDish;
 import com.dattp.order.entity.BookedTable;
@@ -33,7 +33,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @RestController
@@ -43,26 +42,22 @@ public class BookingController {
     // private KafkaTemplate<String,String> kafkaTemplateString;
 
     @Autowired
-    private KafkaTemplate<String,ResponseBookingDTO> kafkaTemplateBooking;
+    private KafkaTemplate<String,BookingResponseDTO> kafkaTemplateBooking;
 
     @Autowired
     BookingService bookingService;
 
     @PostMapping(value="/save")
-    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid RequestBookingDTO bookingR) throws BadRequestException {
+    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid BookingRequestDTO bookingR) throws BadRequestException {
         Booking booking = new Booking();
-        booking.setState(GlobalConfig.DEFAULT_STATE);
+        BeanUtils.copyProperties(bookingR, booking);
+        booking.setState(ApplicationConfig.DEFAULT_STATE);
         booking.setDate(new Date());
-        booking.setCustomerId(bookingR.getCustomerID());
-        booking.setDescription(bookingR.getDescription());
         List<BookedTable> tables = new ArrayList<>();
-        for(RequestBookedTableDTO b : bookingR.getTables()){
+        for(BookedTableRequestDTO b : bookingR.getBookedTables()){
             BookedTable table = new BookedTable();
-            table.setState(GlobalConfig.DEFAULT_STATE);
-            table.setTableId(b.getTableId());
-            table.setFrom(b.getFrom());
-            table.setTo(b.getTo());
-            table.setPrice(b.getPrice());
+            BeanUtils.copyProperties(b, table);
+            table.setState(ApplicationConfig.DEFAULT_STATE);
             table.setBooking(booking);
             if(tables.contains(table)){
                 throw new BadRequestException("Bàn có id = "+table.getTableId()+" bị trùng");
@@ -74,15 +69,13 @@ public class BookingController {
             // dish
             if(b.getDishs()!=null){
                 List<BookedDish> dishs = new ArrayList<>();
-                for(RequestBookedDishDTO d : b.getDishs()){
+                for(BookedDishRequestDTO d : b.getDishs()){
                     BookedDish dish = new BookedDish();
-                    dish.setState(GlobalConfig.DEFAULT_STATE);
-                    dish.setDishID(d.getDishId());
-                    dish.setPrice(d.getPrice());
-                    dish.setTotal(d.getTotal());
+                    BeanUtils.copyProperties(d, dish);
+                    dish.setState(ApplicationConfig.DEFAULT_STATE);
                     dish.setTable(table);
                     if(dishs.contains(dish)){
-                        throw new BadRequestException("Món ăn có id = "+dish.getDishID()+" bị trùng");
+                        throw new BadRequestException("Món ăn có id = "+dish.getDishId()+" bị trùng");
                     }
                     dishs.add(dish);
                 }
@@ -95,18 +88,18 @@ public class BookingController {
         booking = bookingService.save(booking);
         // response
         // phieu dat ban
-        ResponseBookingDTO responseBookingDTO = new ResponseBookingDTO();
+        BookingResponseDTO responseBookingDTO = new BookingResponseDTO();
         BeanUtils.copyProperties(booking, responseBookingDTO);
         // ban
         responseBookingDTO.setBookedTables(new ArrayList<>());
         for(BookedTable newTable : booking.getBookedTables()){
-            ResponseBookedTableDTO tableDTO = new ResponseBookedTableDTO();
+            BookedTableResponseDTO tableDTO = new BookedTableResponseDTO();
             BeanUtils.copyProperties(newTable, tableDTO);
             // mon
             if(newTable.getDishs()!=null){
                 tableDTO.setDishs(new ArrayList<>());
                 for(BookedDish newDish : newTable.getDishs()){
-                    ResponseBookedDishDTO dishDTO = new ResponseBookedDishDTO();
+                    BookedDishResponseDTO dishDTO = new BookedDishResponseDTO();
                     BeanUtils.copyProperties(newDish, dishDTO);
                     tableDTO.getDishs().add(dishDTO);
                 }
@@ -124,12 +117,12 @@ public class BookingController {
     }
 
     @GetMapping("/get_all_booking")
-    public ResponseEntity<ResponseDTO> getByCustemerID(@RequestHeader("access_token") String accessToken){
-        List<ResponseBookingDTO> list = new ArrayList<>();
+    public ResponseEntity<ResponseDTO> getByCustemerID(){
+        List<BookingResponseDTO> list = new ArrayList<>();
         List<Booking> listBK = bookingService.getByCustemerID(1);
         if(listBK!=null && !listBK.isEmpty()){
             for(Booking bk : listBK){
-                ResponseBookingDTO bkDTO = new ResponseBookingDTO();
+                BookingResponseDTO bkDTO = new BookingResponseDTO();
                 BeanUtils.copyProperties(bk, bkDTO);
                 list.add(bkDTO);
             }
@@ -144,7 +137,7 @@ public class BookingController {
     }
 
     @GetMapping("/get_booking_by_id")
-    public ResponseEntity<ResponseBookingDTO> getByID(@RequestParam(value="id") long bookingID){
+    public ResponseEntity<BookingResponseDTO> getByID(@RequestParam(value="id") long bookingID){
         return null;
     }
 }
