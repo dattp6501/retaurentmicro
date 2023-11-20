@@ -9,7 +9,7 @@ D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-topics.bat --create --topic product 
 
 D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-producer.bat --topic createBookingTopic --bootstrap-server localhost:9092
 
-D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic createBookingTopic --from-beginning --bootstrap-server localhost:9092
+D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic newOrder --from-beginning --bootstrap-server localhost:9092
 
 D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic resultCheckBookingTopic --from-beginning --bootstrap-server localhost:9092
 

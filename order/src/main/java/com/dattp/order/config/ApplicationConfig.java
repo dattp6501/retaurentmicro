@@ -1,6 +1,6 @@
 package com.dattp.order.config;
 
-public class GlobalConfig {
+public class ApplicationConfig {
     // entity state
     public static final int DEFAULT_STATE = -1;// chua co trang thai
     public static final int NOT_FOUND_STATE = 0;

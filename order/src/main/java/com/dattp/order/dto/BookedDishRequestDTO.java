@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class RequestBookedDishDTO {
+public class BookedDishRequestDTO {
     private int state;
     private long id;
     

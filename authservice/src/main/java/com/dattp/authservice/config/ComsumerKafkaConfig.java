@@ -20,7 +20,7 @@ import com.dattp.authservice.dto.UserResponseDTO;
 
 @Configuration
 @EnableKafka
-public class KafkaComsumerConfig {
+public class ComsumerKafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
     // 

@@ -11,20 +11,20 @@ import lombok.Getter;
 
 
 @Getter
-public class RequestBookingDTO {
+public class BookingRequestDTO {
     private int state;
     private long id;
     //customer id
     @NotNull(message = "ID khách hàng(customer_id) không được để trống")
     @JsonProperty("customer_id")
-    private long customerID;
+    private Long customerId;
     //create date
 
     @NotNull(message = "Phải có ít nhất 1 bàn được đặt")
     @Size(min = 1, message = "Phải có ít nhất 1 bàn được đặt")
     @Valid// kiểm tra các phần tử bên trong danh sách
-    // @JsonProperty("tables")
-    private List<RequestBookedTableDTO> tables;
+    @JsonProperty("tables")
+    private List<BookedTableRequestDTO> bookedTables;
 
     private String description;
 

@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseBookedTableDTO {
+public class BookedTableResponseDTO {
     private int state;
     private long id;
     private long tableId;
@@ -19,8 +19,8 @@ public class ResponseBookedTableDTO {
     private Date from;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date to;
-    private List<ResponseBookedDishDTO> dishs;
-    public ResponseBookedTableDTO(long id, long tableId, float price, Date from, Date to, List<ResponseBookedDishDTO> dishs) {
+    private List<BookedDishResponseDTO> dishs;
+    public BookedTableResponseDTO(long id, long tableId, float price, Date from, Date to, List<BookedDishResponseDTO> dishs) {
         this.id = id;
         this.tableId = tableId;
         this.price = price;
@@ -28,7 +28,7 @@ public class ResponseBookedTableDTO {
         this.to = to;
         this.dishs = dishs;
     }
-    public ResponseBookedTableDTO() {
+    public BookedTableResponseDTO() {
     }
     @Override
     public int hashCode() {
@@ -41,9 +41,9 @@ public class ResponseBookedTableDTO {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (!(obj instanceof ResponseBookedTableDTO))
+        if (!(obj instanceof BookedTableResponseDTO))
             return false;
-        ResponseBookedTableDTO other = (ResponseBookedTableDTO) obj;
+        BookedTableResponseDTO other = (BookedTableResponseDTO) obj;
         if (id != other.id)
             return false;
         return true;

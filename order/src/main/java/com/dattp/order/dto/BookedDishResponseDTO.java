@@ -5,19 +5,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseBookedDishDTO {
+public class BookedDishResponseDTO {
     private int state;
     private long id;
     private long dishID;
     private int total;
     private float price;
-    public ResponseBookedDishDTO(long id, long dishID, int total, float price) {
+    public BookedDishResponseDTO(long id, long dishID, int total, float price) {
         this.id = id;
         this.dishID = dishID;
         this.total = total;
         this.price = price;
     }
-    public ResponseBookedDishDTO() {
+    public BookedDishResponseDTO() {
     }
     @Override
     public int hashCode() {
@@ -30,9 +30,9 @@ public class ResponseBookedDishDTO {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (!(obj instanceof ResponseBookedDishDTO))
+        if (!(obj instanceof BookedDishResponseDTO))
             return false;
-        ResponseBookedDishDTO other = (ResponseBookedDishDTO) obj;
+        BookedDishResponseDTO other = (BookedDishResponseDTO) obj;
         if (id != other.id)
             return false;
         return true;

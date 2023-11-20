@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dattp.order.dto.ResponseBookedTableDTO;
+import com.dattp.order.dto.BookedTableResponseDTO;
 import com.dattp.order.dto.ResponseDTO;
 import com.dattp.order.service.BookedTableService;
 
@@ -26,7 +26,7 @@ public class BookedTableController {
 
     @GetMapping("/get_by_date_from_to")
     public ResponseEntity<ResponseDTO> get(@RequestParam("from") @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date from, @RequestParam("to") @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date to){
-        List<ResponseBookedTableDTO> bookedTables = new ArrayList<>();
+        List<BookedTableResponseDTO> bookedTables = new ArrayList<>();
         BeanUtils.copyProperties(bookedTableService.getBookedTable(from, to), bookedTables);
         return ResponseEntity.ok().body(
             new ResponseDTO(

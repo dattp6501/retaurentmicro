@@ -33,4 +33,11 @@ public class BookedTableService {
     public boolean existsById(long id){
         return bookedTableRepository.existsById(id);
     }
+
+    // neu co ban da duoc dat trong khoang thoi gian nay thi tra ve true, nguoc lai tra ve false
+    public boolean isFreetime(BookedTable bookedTable){
+        List<BookedTable> list = bookedTableRepository.findBookedTable(bookedTable.getFrom(),bookedTable.getTo(), bookedTable.getTableId());
+        if(list==null) return true;
+        return list.size()<=0;
+    }
 }
