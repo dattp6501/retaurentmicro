@@ -15,6 +15,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TableE {
+    @Column(name = "state")
+    private int state;
 
     @Column(name = "id") @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

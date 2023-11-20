@@ -7,8 +7,10 @@ import lombok.Setter;
 public class ResponseDTO {
     private int code;
     private String message;
-    public ResponseDTO(int code, String message) {
+    private Object data;
+    public ResponseDTO(int code, String message, Object data) {
         this.code = code;
         this.message = message;
+        this.data = data;
     }
 }

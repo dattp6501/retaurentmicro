@@ -1,7 +1,8 @@
 package com.dattp.notifitationservice.service;
 
 import org.springframework.stereotype.Service;
-import com.dattp.notifitationservice.email.EmailHelper;
+
+import com.dattp.notifitationservice.utils.EmailHelper;
 
 @Service
 public class SendMailService {

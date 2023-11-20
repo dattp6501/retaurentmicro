@@ -16,30 +16,51 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-import com.dattp.order.entity.Booking;
+import com.dattp.order.dto.ResponseBookingDTO;
 @EnableKafka
 @Configuration
 public class KafkaComsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
-
+    // create booking
     public Map<String, Object> comsumerConfigBooking(){
         Map<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "Group1");
+        // props.put(ConsumerConfig.GROUP_ID_CONFIG, "Group1");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         return props;
     }
-
     @Bean
-    public ConsumerFactory<String,Booking> consumerFactoryBooking(){
-        return new DefaultKafkaConsumerFactory<>(comsumerConfigBooking(),new StringDeserializer(), new JsonDeserializer<>(Booking.class));
+    public ConsumerFactory<String,ResponseBookingDTO> consumerFactoryBooking(){
+        JsonDeserializer<ResponseBookingDTO> jsonDeserializer = new JsonDeserializer<>(ResponseBookingDTO.class,false);
+        jsonDeserializer.addTrustedPackages("*");
+        return new DefaultKafkaConsumerFactory<>(comsumerConfigBooking(),new StringDeserializer(), jsonDeserializer);
     }
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,Booking>> factoryBooking(ConsumerFactory<String,Booking> consumerFactoryBooking){
-        ConcurrentKafkaListenerContainerFactory<String,Booking> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,ResponseBookingDTO>> factoryBooking(ConsumerFactory<String,ResponseBookingDTO> consumerFactoryBooking){
+        ConcurrentKafkaListenerContainerFactory<String,ResponseBookingDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryBooking);
+        return factory;
+    } 
+    // string
+    public Map<String, Object> comsumerConfigString(){
+        Map<String,Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        // props.put(ConsumerConfig.GROUP_ID_CONFIG, "group2");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        // props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        return props;
+    }
+    @Bean
+    public ConsumerFactory<String,String> consumerFactoryString(){
+        return new DefaultKafkaConsumerFactory<>(comsumerConfigString());
+    }
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,String>> factoryString(ConsumerFactory<String,String> consumerFactoryString){
+        ConcurrentKafkaListenerContainerFactory<String,String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryString);
         return factory;
     } 
 }

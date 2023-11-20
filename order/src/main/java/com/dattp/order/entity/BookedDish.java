@@ -2,6 +2,7 @@ package com.dattp.order.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class BookedDish {
+    @Column(name = "state")
+    private int state;
+    
     @Column(name = "id")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -32,7 +36,7 @@ public class BookedDish {
     @Column(name="price")
     private float price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booked_table_id")
     @JsonIgnore
     private BookedTable table;

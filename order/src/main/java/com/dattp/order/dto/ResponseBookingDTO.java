@@ -1,13 +1,22 @@
 package com.dattp.order.dto;
 
-import com.dattp.order.entity.Booking;
+import java.util.Date;
+import java.util.List;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Getter;
-@Builder
+import lombok.Setter;
+
 @Getter
+@Setter
 public class ResponseBookingDTO {
-    private int code;
-    private String message;
-    private Booking booking;
+    private int state;
+    private long id;
+    private long CustomerId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date date;
+    private String description;
+    private List<ResponseBookedTableDTO> bookedTables;
+    public ResponseBookingDTO(){}
 }

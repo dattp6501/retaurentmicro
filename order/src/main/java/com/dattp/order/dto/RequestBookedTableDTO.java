@@ -1,7 +1,7 @@
 package com.dattp.order.dto;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -15,6 +15,8 @@ import lombok.Getter;
 
 @Getter
 public class RequestBookedTableDTO {
+    private int state;
+    private long id;
     @Min(value = 1, message = "Bàn(table_id) chưa được chọn or không tồn tại")  
     @JsonProperty("table_id")  
     private long tableId;
@@ -32,5 +34,5 @@ public class RequestBookedTableDTO {
 
     @Valid
     // @JsonProperty("dishs")
-    private Collection<RequestBookedDishDTO> dishs;
+    private List<RequestBookedDishDTO> dishs;
 }

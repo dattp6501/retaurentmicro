@@ -54,6 +54,7 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -142,20 +143,23 @@
 
 		<!-- axon -->
 		<!-- https://mvnrepository.com/artifact/org.axonframework/axon-spring-boot-starter -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.axonframework</groupId>
 			<artifactId>axon-spring-boot-starter</artifactId>
 			<version>4.9.0</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>32.1.3-jre</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
 		</dependency>
-
-
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

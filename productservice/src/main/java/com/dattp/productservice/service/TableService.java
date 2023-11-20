@@ -3,7 +3,6 @@ package com.dattp.productservice.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -13,13 +12,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import com.dattp.productservice.config.GlobalConfig;
 import com.dattp.productservice.entity.TableE;
 import com.dattp.productservice.exception.BadRequestException;
 import com.dattp.productservice.repository.TableRepository;
@@ -28,9 +23,6 @@ import com.dattp.productservice.repository.TableRepository;
 public class TableService {
     @Autowired
     private TableRepository tableRepository;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     public TableE saveTable(TableE table) {
         return tableRepository.save(table);
@@ -41,11 +33,6 @@ public class TableService {
     }
 
     public ArrayList<TableE> getFreeTime(Date from, Date to) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity <String> entity = new HttpEntity<String>(headers);
-      
-        restTemplate.exchange("http://localhost:9093", HttpMethod.GET, entity, String.class).getBody();
         return null;
     }
     
@@ -65,6 +52,7 @@ public class TableService {
         while(it.hasNext()) {
             Row row = it.next();
             TableE table = new TableE();
+            table.setState(GlobalConfig.OK_STATE);
             for(int i=0; i<4; i++){
                 if(i==COLUMN_INDEX_NAME){
                     if(row.getCell(i)==null || row.getCell(i).getStringCellValue().equals("")) {
@@ -113,5 +101,9 @@ public class TableService {
     }
     public List<TableE> save(List<TableE> tables){
         return tableRepository.saveAll(tables);
+    }
+
+    public TableE getById(long id){
+        return tableRepository.findById(id).orElse(null);
     }
 }

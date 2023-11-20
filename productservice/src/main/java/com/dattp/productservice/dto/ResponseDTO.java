@@ -9,9 +9,11 @@ import lombok.Setter;
 public class ResponseDTO{
     private int code;
     private String message;
+    private Object data;
     @Builder
-    public ResponseDTO(int code, String message) {
+    public ResponseDTO(int code, String message, Object data) {
         this.code = code;
         this.message = message;
+        this.data = data;
     }
 }
