@@ -23,20 +23,36 @@ public class AuthserviceApplication{
 	@Bean
 	CommandLineRunner run(RoleService roleService, UserService userService){
 		return arg0->{
-			Role roleUser = roleService.saveRole(new Role(null, "ROLE_USER", true));
-			System.out.println(roleUser);
-			Role roleManager = roleService.saveRole(new Role(null, "ROLE_MANAGER", true));
 			Role roleAdmin = roleService.saveRole(new Role(null, "ROLE_ADMIN", true));
-			Role roleSuperAdmin = roleService.saveRole(new Role(null, "ROLE_SUPERADMIN", true));
+			// nhom quyen nguoi dung
+			Role roleOrder1 = roleService.saveRole(new Role(null, "ROLE_ORDER_NEW", true));
+			Role roleOrder2 = roleService.saveRole(new Role(null, "ROLE_ORDER_ACCESS", true));
+			Role roleOrder3 = roleService.saveRole(new Role(null, "ROLE_ORDER_UPDATE", true));
+			Role roleOrder4 = roleService.saveRole(new Role(null, "ROLE_ORDER_DELETE", true));
 
-
-			User user1 = userService.saveUser(new User(null, "Nguyen Van A", "anv", "123456789","anv@gmail.com", new ArrayList<>()));
-			User user2 = userService.saveUser(new User(null, "Truong Phuc Dat", "dattp", "dattp","dattp@gmail.com", new ArrayList<>()));
-
-			userService.addRoleToUser(user1.getId(), roleUser.getId());
-			userService.addRoleToUser(user1.getId(), roleManager.getId());
-			userService.addRoleToUser(user2.getId(), roleAdmin.getId());
-			userService.addRoleToUser(user2.getId(), roleSuperAdmin.getId());
+			Role roleProduct1 = roleService.saveRole(new Role(null, "ROLE_PRODUCT_ACCESS", true));
+			Role roleProduct2 = roleService.saveRole(new Role(null, "ROLE_PRODUCT_NEW", true));
+			Role roleProduct3 = roleService.saveRole(new Role(null, "ROLE_PRODUCT_UPDATE", true));
+			Role roleProduct4 = roleService.saveRole(new Role(null, "ROLE_PRODUCT_DELETE", true));
+			
+			User user1 = userService.saveUser(new User(null, "Khách hàng 1", "kh1", "1","kh1@gmail.com", new ArrayList<>()));
+			User user2 = userService.saveUser(new User(null, "manager", "manager", "manager","manager@gmail.com", new ArrayList<>()));
+			User user3 = userService.saveUser(new User(null, "admin", "admin", "admin","admin@gmail.com", new ArrayList<>()));
+			// khach hang
+			userService.addRoleToUser(user1.getUsername(), roleProduct1.getName());
+			userService.addRoleToUser(user1.getUsername(), roleOrder1.getName());
+			userService.addRoleToUser(user1.getUsername(), roleOrder2.getName());
+			// manager
+			userService.addRoleToUser(user2.getUsername(), roleProduct1.getName());
+			userService.addRoleToUser(user2.getUsername(), roleProduct2.getName());
+			userService.addRoleToUser(user2.getUsername(), roleProduct3.getName());
+			userService.addRoleToUser(user2.getUsername(), roleProduct4.getName());
+			userService.addRoleToUser(user2.getUsername(), roleOrder2.getName());
+			userService.addRoleToUser(user2.getUsername(), roleOrder3.getName());
+			userService.addRoleToUser(user2.getUsername(), roleOrder4.getName());
+			// admin
+			userService.addRoleToUser(user3.getUsername(), roleAdmin.getName());
+			
 		};
 	}
 }

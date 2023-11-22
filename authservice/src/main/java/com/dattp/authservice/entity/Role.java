@@ -25,7 +25,7 @@ import lombok.Setter;
 public class Role {
     public Role(Long id, String name, boolean isEnable) {
         this.id = id;
-        this.name = name;
+        this.name = name.toUpperCase();
         this.isEnable = isEnable;
     }
 
@@ -36,7 +36,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "is_enable", nullable = false)
