@@ -4,6 +4,7 @@ package com.dattp.productservice.exception;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.apache.poi.EmptyFileException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,6 +53,14 @@ public class HandleBadRequestException {
     @ExceptionHandler(IOException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerException(IOException e){
+        return new ResponseDTO(
+            HttpStatus.BAD_REQUEST.value(), e.getMessage(),null
+        );
+    }
+
+    @ExceptionHandler(EmptyFileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDTO handlerEmptyFileException(EmptyFileException e){
         return new ResponseDTO(
             HttpStatus.BAD_REQUEST.value(), e.getMessage(),null
         );

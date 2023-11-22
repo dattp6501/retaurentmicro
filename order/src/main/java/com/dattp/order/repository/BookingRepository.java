@@ -1,7 +1,7 @@
 package com.dattp.order.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +15,5 @@ public interface BookingRepository extends JpaRepository<Booking,Long>{
     public int updateState(@Param("id") Long id,@Param("state") Integer state);
 
     @Query(value="SELECT * FROM BOOKING bk WHERE bk.customer_id=:customer_id", nativeQuery = true)
-    public List<Booking> getAllByCustomerID(@Param("customer_id") Long customerID);
+    public Page<Booking> getAllByCustomerId(@Param("customer_id") Long customerId, Pageable pageable);
 }

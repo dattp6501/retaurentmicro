@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +19,9 @@ import com.dattp.authservice.repository.UserRepository;
 
 @Service
 public class AuthenticationService {
+    @Value("${jwt.expiration-accesstoken}")
+    private long EXPIRATION_ACCESSTOKEN;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -46,13 +50,13 @@ public class AuthenticationService {
         if(user!=null){
             user.setRoles(roleRepository.getRoles(user.getUsername()));//lay role
         }
-
+        // tao danh sach role de spring boot quan ly
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(i->authorities.add(
             new SimpleGrantedAuthority(i.getName())
         ));
         String jwtAccessToken = jwtService.generateAccessToken(user, authorities);
         String jwtRefreshToken = jwtService.generateRefreshToken(user, authorities);
-        return new AuthResponseDTO(jwtAccessToken, jwtRefreshToken);
+        return new AuthResponseDTO(jwtAccessToken, jwtRefreshToken, EXPIRATION_ACCESSTOKEN);
     }
 }

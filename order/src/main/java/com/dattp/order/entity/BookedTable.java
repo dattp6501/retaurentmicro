@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class BookedTable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="booking_id")
+    @JsonIgnore
     private Booking booking;
     
     public BookedTable(){}

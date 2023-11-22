@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.dattp.authservice.entity.Role;
 import com.dattp.authservice.entity.User;
+import com.dattp.authservice.repository.RoleRepository;
 import com.dattp.authservice.repository.UserRepository;
 
 @Service
@@ -16,7 +17,7 @@ public class UserService{
     private UserRepository userRepository;
 
     @Autowired
-    private RoleService roleService;
+    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -35,9 +36,9 @@ public class UserService{
     }
 
     @Transactional
-    public void addRoleToUser(Long userId, Long roleID){
-        User user = userRepository.findById(userId).orElse(null);
-        Role role = roleService.getByID(roleID);
+    public void addRoleToUser(String username, String rolename){
+        User user = userRepository.findByUsername(username).orElseThrow();
+        Role role = roleRepository.findByName(rolename).orElseThrow();
         user.getRoles().add(role);
     }
 }

@@ -1,4 +1,4 @@
-package com.dattp.authservice.config;
+package com.dattp.productservice.config;
 
 import java.io.IOException;
 import java.util.ArrayList;

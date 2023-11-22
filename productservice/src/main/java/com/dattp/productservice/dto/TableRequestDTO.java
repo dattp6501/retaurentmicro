@@ -1,8 +1,12 @@
 package com.dattp.productservice.dto;
 
+import java.util.Date;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +25,12 @@ public class TableRequestDTO {
 
     @Min(value = 1, message = "Giá thuê phải lớn hơn hoặc bằng 0")
     private float price;
+
+    @JsonFormat(pattern = "HH:mm")
+    private Date from;
+
+    @JsonFormat(pattern = "HH:mm")
+    private Date to;
 
     private String desciption;
 }

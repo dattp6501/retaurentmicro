@@ -23,4 +23,6 @@ public interface RoleRepository extends JpaRepository<Role,Long>{
         nativeQuery = true
     )
     public List<Role> getRoles(@Param("username") String username);
+
+    public Optional<Role> findByName(String name);
 }

@@ -27,7 +27,7 @@ public class JWTService {
     public String generateAccessToken(User user, Collection<SimpleGrantedAuthority> authorities){
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
         return JWT.create()
-            .withSubject(user.getUsername())
+            .withSubject(user.getId()+"")
             .withExpiresAt(new Date(System.currentTimeMillis()+EXPIRATION_ACCESSTOKEN))
             .withClaim(
                 "roles", 
