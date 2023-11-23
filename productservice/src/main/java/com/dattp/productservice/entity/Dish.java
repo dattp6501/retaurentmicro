@@ -1,10 +1,13 @@
 package com.dattp.productservice.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -29,6 +32,9 @@ public class Dish {
 
     @Column(name="description")
     private String discription;
+    
+    @OneToMany(mappedBy="dish")
+    private List<CommentDish> CommentDishs;
 
     public Dish(long id, String name, float price, String discription) {
         this.id = id;

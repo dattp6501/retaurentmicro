@@ -25,7 +25,7 @@ public class SecurityConfig{
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> auth
-                // .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .antMatchers("/h2-console/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers(GlobalConfig.pathPublic).permitAll()
                 .anyRequest().authenticated()

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,15 +18,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.dattp.productservice.config.GlobalConfig;
+import com.dattp.productservice.entity.CommentDish;
 import com.dattp.productservice.entity.Dish;
 import com.dattp.productservice.exception.BadRequestException;
 import com.dattp.productservice.repository.DishRepository;
+import com.dattp.productservice.repository.CommentDishRepository;
 
 @Service
 public class DishService {
     @Autowired
     private DishRepository dishRepository;
 
+    @Autowired
+    private CommentDishRepository CommentDishRepository;
+
+    @Transactional
     public Dish save(Dish dish){
         return dishRepository.save(dish);
     }
@@ -76,6 +84,8 @@ public class DishService {
         workbook.close();
         return dishs;
     }
+
+    @Transactional
     public List<Dish> save(List<Dish> dishs){
         return dishRepository.saveAll(dishs);
     }
@@ -84,5 +94,12 @@ public class DishService {
     }
     public Dish getById(long id){
         return dishRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public boolean addComment(Long dishId, CommentDish comment){
+        if(CommentDishRepository.findByDishIdAndUserId(dishId, comment.getUser().getId())!=null)
+            return CommentDishRepository.update(comment.getStar(), comment.getComment(), dishId, comment.getUser().getId())>0;
+        return CommentDishRepository.save(comment.getStar(), comment.getComment(), dishId, comment.getUser().getId(), comment.getUser().getUsername())>=1;
     }
 }
