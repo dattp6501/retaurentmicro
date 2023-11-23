@@ -1,6 +1,7 @@
 package com.dattp.productservice.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -25,6 +26,8 @@ public class TableResponseDTO{
 
     @JsonFormat(pattern = "HH:mm")
     private Date to;
+
+    private List<CommentTableResponseDTO> comments;
 
     private String desciption;
 

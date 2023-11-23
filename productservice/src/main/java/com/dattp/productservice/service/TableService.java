@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,8 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.dattp.productservice.config.GlobalConfig;
+import com.dattp.productservice.entity.CommentTable;
 import com.dattp.productservice.entity.TableE;
 import com.dattp.productservice.exception.BadRequestException;
+import com.dattp.productservice.repository.CommentTableRepository;
 import com.dattp.productservice.repository.TableRepository;
 
 @Service
@@ -27,6 +30,10 @@ public class TableService {
     @Autowired
     private TableRepository tableRepository;
 
+    @Autowired
+    private CommentTableRepository commentTableRepository;
+
+    @Transactional
     public TableE saveTable(TableE table) {
         return tableRepository.save(table);
     }
@@ -34,12 +41,7 @@ public class TableService {
     public Page<TableE> getAll(Pageable pageable){
         return tableRepository.findAll(pageable);
     }
-
-    public ArrayList<TableE> getFreeTime(Date from, Date to) {
-        return null;
-    }
     
-
     public List<TableE> readXlsxTable(InputStream inputStream) throws IOException{
         List<TableE> tables = new ArrayList<>();
         final int COLUMN_INDEX_NAME = 0;
@@ -128,11 +130,21 @@ public class TableService {
         workbook.close();
         return tables;
     }
+
+    @Transactional
     public List<TableE> save(List<TableE> tables){
         return tableRepository.saveAll(tables);
     }
 
     public TableE getById(long id){
         return tableRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public boolean addComment(Long tableId, CommentTable comment){
+        // if user commented
+        if(commentTableRepository.findByTableIdAndUserId(tableId, comment.getUser().getId())!=null)
+            return commentTableRepository.update(comment.getStar(), comment.getComment(), tableId, comment.getUser().getId())>0;
+        return commentTableRepository.save(comment.getStar(), comment.getComment(), tableId, comment.getUser().getId(), comment.getUser().getUsername())>=1;
     }
 }

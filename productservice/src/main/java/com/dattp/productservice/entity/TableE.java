@@ -1,12 +1,14 @@
 package com.dattp.productservice.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -44,6 +46,9 @@ public class TableE {
 
     @Column(name = "description")
     private String desciption;
+
+    @OneToMany(mappedBy="table")
+    private List<CommentTable> CommentTables;
 
 
     public TableE(){}

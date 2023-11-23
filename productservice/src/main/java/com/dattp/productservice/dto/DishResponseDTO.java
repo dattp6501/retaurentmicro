@@ -1,5 +1,7 @@
 package com.dattp.productservice.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +15,8 @@ public class DishResponseDTO {
     private String name;
 
     private float price;
+
+    private List<CommentDishResponseDTO> comments;
 
     private String discription;
 
