@@ -17,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.dattp.productservice.config.GlobalConfig;
+import com.dattp.productservice.config.ApplicationConfig;
 import com.dattp.productservice.entity.CommentDish;
 import com.dattp.productservice.entity.Dish;
 import com.dattp.productservice.exception.BadRequestException;
@@ -41,6 +41,7 @@ public class DishService {
         final int COLUMN_INDEX_NAME = 0;
         final int COLUMN_INDEX_PRICE = 1;
         final int COLUMN_INDEX_DESCRIPTION = 2;
+        final int COLUMN_INDEX_IMAGE = 3;
         List<Dish> dishs = new ArrayList<>();
         Workbook workbook = new XSSFWorkbook(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
@@ -49,7 +50,7 @@ public class DishService {
         int index = 1;
         while(it.hasNext()) {
             Dish dish = new Dish();
-            dish.setState(GlobalConfig.OK_STATE);
+            dish.setState(ApplicationConfig.OK_STATE);
             Row row = it.next();
             for(int i=0; i<3; i++){
                 if(i==COLUMN_INDEX_NAME){
@@ -73,8 +74,14 @@ public class DishService {
                 }
                 if(i==COLUMN_INDEX_DESCRIPTION){
                     if(row.getCell(i)!=null){
-                        dish.setDiscription(row.getCell(i).getStringCellValue());
+                        dish.setDescription(row.getCell(i).getStringCellValue());
                         workbook.close();
+                    }
+                }
+                if(i==COLUMN_INDEX_IMAGE){
+                    if(row.getCell(i)!=null){
+                        // PictureData pictureData = (PictureData)row.getCell(i);
+
                     }
                 }
             }
@@ -99,7 +106,7 @@ public class DishService {
     @Transactional
     public boolean addComment(Long dishId, CommentDish comment){
         if(CommentDishRepository.findByDishIdAndUserId(dishId, comment.getUser().getId())!=null)
-            return CommentDishRepository.update(comment.getStar(), comment.getComment(), dishId, comment.getUser().getId())>0;
-        return CommentDishRepository.save(comment.getStar(), comment.getComment(), dishId, comment.getUser().getId(), comment.getUser().getUsername())>=1;
+            return CommentDishRepository.update(comment.getStar(), comment.getComment(), dishId, comment.getUser().getId(), comment.getDate())>0;
+        return CommentDishRepository.save(comment.getStar(), comment.getComment(), dishId, comment.getUser().getId(), comment.getUser().getUsername(), comment.getDate())>=1;
     }
 }

@@ -29,9 +29,9 @@ public class TableResponseDTO{
 
     private List<CommentTableResponseDTO> comments;
 
-    private String desciption;
+    private String description;
 
-    public TableResponseDTO(int state, long id, String name, int amountOfPeople, float price, Date from, Date to, String desciption) {
+    public TableResponseDTO(int state, long id, String name, int amountOfPeople, float price, Date from, Date to, String description) {
         this.state = state;
         this.id = id;
         this.name = name;
@@ -39,9 +39,10 @@ public class TableResponseDTO{
         this.price = price;
         this.from = from;
         this.to = to;
-        this.desciption = desciption;
+        this.description = description;
     }
 
     public TableResponseDTO() {
+        super();
     }
 }

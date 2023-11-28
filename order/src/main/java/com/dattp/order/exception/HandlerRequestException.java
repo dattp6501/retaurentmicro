@@ -15,24 +15,24 @@ public class HandlerRequestException {
     @ExceptionHandler(value =BindException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerBindException(BindException e){
-        return new ResponseDTO(HttpStatus.OK.value(),e.getAllErrors().get(0).getDefaultMessage(),null);
+        return new ResponseDTO(HttpStatus.BAD_REQUEST.value(),e.getAllErrors().get(0).getDefaultMessage(),null);
     }
 
     @ExceptionHandler(value =BadRequestException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerBindException(BadRequestException e){
-        return new ResponseDTO(HttpStatus.OK.value(),e.getMessage(),null);
+        return new ResponseDTO(HttpStatus.BAD_REQUEST.value(),e.getMessage(),null);
     }
 
     @ExceptionHandler(value =MethodArgumentNotValidException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerBindException(MethodArgumentNotValidException e){
-        return new ResponseDTO(HttpStatus.OK.value(),e.getAllErrors().get(0).getDefaultMessage(),null);
+        return new ResponseDTO(HttpStatus.BAD_REQUEST.value(),e.getAllErrors().get(0).getDefaultMessage(),null);
     }
 
     @ExceptionHandler(value = JsonParseException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseDTO handlerJSONParseException(JsonParseException e){
-        return new ResponseDTO(HttpStatus.OK.value(), e.getMessage(),null);
+        return new ResponseDTO(HttpStatus.BAD_REQUEST.value(), e.getMessage(),null);
     }
 }

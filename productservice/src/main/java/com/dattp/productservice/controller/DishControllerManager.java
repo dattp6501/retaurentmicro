@@ -35,7 +35,7 @@ public class DishControllerManager {
         Dish dish = new Dish();
         dish.setName(dishR.getName());
         dish.setPrice(dishR.getPrice());
-        dish.setDiscription(dishR.getDiscription());
+        dish.setDescription(dishR.getDiscription());
         dish = dishService.save(dish);
         DishResponseDTO dishDTO = new DishResponseDTO();
         BeanUtils.copyProperties(dish, dishDTO);

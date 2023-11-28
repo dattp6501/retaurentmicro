@@ -16,8 +16,6 @@ D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic checkOr
 D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic notiOrder --from-beginning --bootstrap-server localhost:9092
 
 # referrence
-https://www.youtube.com/watch?v=SqVfCyfCJqw
-https://developer.okta.com/blog/2022/09/15/kafka-microservices#what-is-kafka
 
 
 

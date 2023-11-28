@@ -1,10 +1,13 @@
 package com.dattp.order.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -12,13 +15,17 @@ import lombok.Getter;
 
 @Getter
 public class BookingRequestDTO {
-    private int state;
-    private long id;
-    //customer id
-    @NotNull(message = "ID khách hàng(customer_id) không được để trống")
-    @JsonProperty("customer_id")
-    private Long customerId;
-    //create date
+    // private int state;
+    // private long id;
+    // private long customerId;
+    
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    @NotNull(message = "Thời gian bắt đầu(from) không được bỏ trống")
+    private Date from;
+
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    @NotNull(message = "Thời gian kết thúc(to) không được bỏ trống")
+    private Date to;
 
     @NotNull(message = "Phải có ít nhất 1 bàn được đặt")
     @Size(min = 1, message = "Phải có ít nhất 1 bàn được đặt")

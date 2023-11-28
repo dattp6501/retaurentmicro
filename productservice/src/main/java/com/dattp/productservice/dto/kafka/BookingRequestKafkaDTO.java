@@ -1,4 +1,4 @@
-package com.dattp.productservice.dto;
+package com.dattp.productservice.dto.kafka;
 
 import java.util.Collection;
 import java.util.Date;
@@ -16,8 +16,12 @@ public class BookingRequestKafkaDTO {
     private long id;
     private long CustomerId;
     
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date date;
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date from;
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date to;
     private String description;
     private Collection<BookedTableRequestKafkaDTO> bookedTables;
     public BookingRequestKafkaDTO(long id, long customerId, Date date, String description, Collection<BookedTableRequestKafkaDTO> bookedTables) {

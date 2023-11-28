@@ -11,6 +11,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+        http.cors(cors -> cors.disable());
         http
             .authorizeExchange(exchange -> exchange
                 .pathMatchers("/**").permitAll()

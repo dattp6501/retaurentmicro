@@ -18,14 +18,14 @@ public class DishResponseDTO {
 
     private List<CommentDishResponseDTO> comments;
 
-    private String discription;
+    private String description;
 
-    public DishResponseDTO(int state, long id, String name, float price, String discription) {
+    public DishResponseDTO(int state, long id, String name, float price, String description) {
         this.state = state;
         this.id = id;
         this.name = name;
         this.price = price;
-        this.discription = discription;
+        this.description = description;
     }
 
     public DishResponseDTO() {

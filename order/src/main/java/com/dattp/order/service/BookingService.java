@@ -26,7 +26,7 @@ public class BookingService {
     @Autowired
     private BookedTableService bookedTableService;
     @Autowired
-    private BookedDishService bookedDishService;
+    private CartService cartService;
     @Autowired
     private KafkaTemplate<String,BookingResponseDTO> bookingKafkaTemplate;
 
@@ -34,10 +34,11 @@ public class BookingService {
     public Booking save(Booking booking){
         booking.getBookedTables().forEach(b->{
             if(!bookedTableService.isFreetime(b)){//ban da duoc thue trong khoang thoi gian nay
-                throw new BadRequestException("Bàn ID = "+b.getTableId()+" đã được thuê trong khoảng thòi gian này");
+                throw new BadRequestException("Bàn name = "+b.getName()+" đã được thuê trong khoảng thòi gian này");
             }
         });
         Booking newBooking = bookingRepository.save(booking);
+        cartService.deleteAllTable(newBooking.getCustomerId());
         return newBooking;
     }
 
@@ -52,6 +53,7 @@ public class BookingService {
     public void removeById(long id){
         bookingRepository.deleteById(id);
     }
+    
     @Transactional
     public void checkAndUpdateBooking(BookingResponseDTO bookingResponse){
         // neu don hang khong ton tai
@@ -66,25 +68,11 @@ public class BookingService {
                     bookedTableService.updateState(t.getId(), t.getState());
                 }
             })
-            .filter(t->t.getState()!=ApplicationConfig.NOT_FOUND_STATE)//lay cac ban co the dat
-            .peek((t)->{
-                if(t.getDishs()!=null){
-                    t.setDishs(t.getDishs().stream()
-                        .filter(d->bookedDishService.existsById(d.getId()))//loc ra tat ca cac mon dat ton tai
-                        .peek((d)->{
-                            if(d.getState()==ApplicationConfig.NOT_FOUND_STATE){//neu mon khong ton tai
-                                bookedDishService.removeById(d.getId());
-                            }else{
-                                bookedDishService.updateState(d.getId(), d.getState());
-                            }
-                        }).collect(Collectors.toList())
-                    );
-                }
-            })
+            .filter(t->t.getState()!=ApplicationConfig.NOT_FOUND_STATE)//lay cac ban co the dat dau khi cap nhat
             .collect(Collectors.toList());
         if(bookedTableSuccess==null || bookedTableSuccess.size()<=0)
             bookingRepository.deleteById(bookingResponse.getId());
-        else bookingRepository.updateState(bookingResponse.getId(), ApplicationConfig.OK_STATE);
+        else bookingRepository.updateState(bookingResponse.getId(), ApplicationConfig.WATING_STATE);
         
         bookingKafkaTemplate.send("notiOrder",bookingResponse);
     }

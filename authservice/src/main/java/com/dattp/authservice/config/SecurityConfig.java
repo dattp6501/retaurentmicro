@@ -35,7 +35,7 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf -> csrf.disable());
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+        http.cors(cors -> cors.disable());
         http.authorizeHttpRequests(auth -> auth
                 // .antMatchers("/**").permitAll()
                 .antMatchers("/h2-console/**").hasAuthority("ROLE_ADMIN")

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dattp.productservice.config.GlobalConfig;
+import com.dattp.productservice.config.ApplicationConfig;
 import com.dattp.productservice.dto.ResponseDTO;
 import com.dattp.productservice.dto.TableRequestDTO;
 import com.dattp.productservice.dto.TableResponseDTO;
@@ -34,11 +34,11 @@ public class TableControllerManager {
     @RolesAllowed({"ROLE_ADMIN","ROLE_PRODUCT_NEW"})
     public ResponseEntity<ResponseDTO> save(@RequestBody @Valid TableRequestDTO tableR){
         TableE table = new TableE();
-        table.setState(GlobalConfig.DEFAULT_STATE);
+        table.setState(ApplicationConfig.DEFAULT_STATE);
         table.setName(tableR.getName());
         table.setAmountOfPeople(tableR.getAmountOfPeople());
         table.setPrice(tableR.getPrice());
-        table.setDesciption(tableR.getDesciption());
+        table.setDescription(tableR.getDescription());
         table = tableService.saveTable(table);
         TableResponseDTO tableDTO = new TableResponseDTO();
         BeanUtils.copyProperties(table, tableDTO);

@@ -32,5 +32,5 @@ public class TableRequestDTO {
     @JsonFormat(pattern = "HH:mm")
     private Date to;
 
-    private String desciption;
+    private String description;
 }

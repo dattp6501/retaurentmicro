@@ -36,29 +36,29 @@ public class TableE {
     @Column(name = "price")
     private float price;
 
-    @Column(name = "from_")
+    @Column(name = "from_", columnDefinition = "TIME")
     @JsonFormat(pattern = "HH:mm")
     private Date from;
 
-    @Column(name = "to_")
+    @Column(name = "to_", columnDefinition = "TIME")
     @JsonFormat(pattern = "HH:mm")
     private Date to;
 
-    @Column(name = "description")
-    private String desciption;
+    @Column(name = "description", columnDefinition = "LONGTEXT")
+    private String description;
 
     @OneToMany(mappedBy="table")
     private List<CommentTable> CommentTables;
 
 
     public TableE(){}
-    public TableE(long id, String name, int amountOfPeople, float price, Date from, Date to, String desciption) {
+    public TableE(long id, String name, int amountOfPeople, float price, Date from, Date to, String description) {
         this.id = id;
         this.name = name;
         this.amountOfPeople = amountOfPeople;
         this.price = price;
         this.from = from;
         this.to = to;
-        this.desciption = desciption;
+        this.description = description;
     }
 }
