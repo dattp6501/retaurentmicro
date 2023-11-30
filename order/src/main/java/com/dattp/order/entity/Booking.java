@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,15 +34,31 @@ public class Booking {
     @Column(name = "customer_id")
     private long CustomerId;
 
+    @Column(name="custemer_fullname")
+    private String custemerFullname;
+
     @Column(name = "date", nullable = false)
     // @CreatedDate
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date date;
+
+    @Column(name = "from_", nullable = false)
+    // @CreatedDate
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date from;
+
+    @Column(name = "to_", nullable = false)
+    // @CreatedDate
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date to;
+
+    @Column(name = "deposits")
+    private float deposits;
 
     @Column(name = "desciption")
     private String description;
 
-    @OneToMany(mappedBy = "booking", cascade ={CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "booking", cascade ={CascadeType.ALL}, fetch=FetchType.LAZY )
     private List<BookedTable> bookedTables;
 
     public Booking(){

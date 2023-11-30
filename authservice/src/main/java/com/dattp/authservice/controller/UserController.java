@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dattp.authservice.dto.AuthRequestDTO;
-import com.dattp.authservice.dto.AuthResponseDTO;
 import com.dattp.authservice.dto.ResponseDTO;
 import com.dattp.authservice.dto.UserRequestDTO;
 import com.dattp.authservice.dto.UserResponseDTO;
@@ -39,9 +38,9 @@ public class UserController {
 
     @PostMapping
     @RequestMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authenticationRequest){
+    public ResponseEntity<ResponseDTO> login(@RequestBody @Valid AuthRequestDTO authenticationRequest){
         return ResponseEntity.ok().body(
-            authenticationService.authenticate(authenticationRequest)
+            new ResponseDTO(HttpStatus.OK.value(), "Thành công", authenticationService.authenticate(authenticationRequest))
         );
     }
 
@@ -55,7 +54,11 @@ public class UserController {
         UserResponseDTO userResp = new UserResponseDTO();
         BeanUtils.copyProperties(newUser, userResp);
         // gui thong diep den notification service de gui thong bao xac thuc
-        kafkaTemplateUser.send("new-user", userResp);
+        try {
+            kafkaTemplateUser.send("new-user", userResp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
         return ResponseEntity.ok().body(
             new ResponseDTO(HttpStatus.OK.value(), "Thành công", userResp)

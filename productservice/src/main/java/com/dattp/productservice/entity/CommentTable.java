@@ -1,5 +1,7 @@
 package com.dattp.productservice.entity;
 
+import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -11,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +29,10 @@ public class CommentTable {
 
     @Column(name="star", nullable=false)
     private int star;
+
+    @Column(name = "date_")
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date date;
 
     @Column(name="comment")
     private String comment;

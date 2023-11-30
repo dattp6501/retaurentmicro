@@ -21,4 +21,9 @@ public class TopicKafkaConfig {
     public NewTopic notificationOrderTopic(){
         return TopicBuilder.name("notiOrder").build();
     }
+
+    @Bean
+    public NewTopic newUserTopic(){
+        return TopicBuilder.name("new-user").build();
+    }
 }

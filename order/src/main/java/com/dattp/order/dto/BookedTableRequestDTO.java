@@ -1,13 +1,8 @@
 package com.dattp.order.dto;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -15,24 +10,19 @@ import lombok.Getter;
 
 @Getter
 public class BookedTableRequestDTO {
-    private int state;
-    private long id;
+    // private int state;
+    // private long id;
     @Min(value = 1, message = "Bàn(table_id) chưa được chọn or không tồn tại")  
-    @JsonProperty("table_id")  
+    @JsonProperty("tableId")  
     private long tableId;
 
-    @Min(value = 1, message = "Giá bàn(price) phải lớn hơn 0")
-    private float price;
+    @NotNull(message = "Tên bàn(name) không được để trống")
+    private String name;
 
-    @NotNull(message = "Thời gian bắt đầu(from) không được bỏ trống")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date from;
+    // @Min(value = 1, message = "Giá bàn(price) phải lớn hơn 0")
+    // private float price;
 
-    @NotNull(message = "Thời gian kết thúc(to) không được bỏ trống")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date to;
-
-    @Valid
+    // @Valid
     // @JsonProperty("dishs")
-    private List<BookedDishRequestDTO> dishs;
+    // private List<BookedDishRequestDTO> dishs;
 }

@@ -30,17 +30,20 @@ public class Dish {
     @Column(name = "price")
     private float price;
 
+    @Column(name="image")
+    private byte[] image;
+
     @Column(name="description")
-    private String discription;
+    private String description;
     
     @OneToMany(mappedBy="dish")
     private List<CommentDish> CommentDishs;
 
-    public Dish(long id, String name, float price, String discription) {
+    public Dish(long id, String name, float price, String description) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.discription = discription;
+        this.description = description;
     }
 
     public Dish() {

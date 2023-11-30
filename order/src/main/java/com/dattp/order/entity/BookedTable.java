@@ -36,16 +36,19 @@ public class BookedTable {
     
     @Column(name="table_id", nullable=false)
     private long tableId;
+
+    @Column(name = "name")
+    private String name;
     
     @Column(name="price", nullable=false)
     private float price;
     
     @Column(name="from_", nullable=false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date from;
 
     @Column(name="to_", nullable=false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date to;
 
     @OneToMany(mappedBy="table", cascade={CascadeType.ALL}, orphanRemoval = true)

@@ -30,6 +30,9 @@ public class BookedDish {
     @Column(name="dish_id")
     private long dishId;
 
+    @Column(name="name")
+    private String name;
+
     @Column(name="total")
     private int total;
 

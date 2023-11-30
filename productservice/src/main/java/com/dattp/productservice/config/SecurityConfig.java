@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -25,9 +27,9 @@ public class SecurityConfig{
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(auth -> auth
-                .antMatchers("/**").permitAll()
-                .antMatchers("/h2-console/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers(GlobalConfig.pathPublic).permitAll()
+                // .antMatchers("/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()//.hasAuthority("ROLE_ADMIN")
+                .antMatchers(ApplicationConfig.pathPublic).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -38,4 +40,14 @@ public class SecurityConfig{
             );
         return http.build();
     }
+
+    @Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**");
+			}
+		};
+	}
 }

@@ -17,7 +17,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-import com.dattp.productservice.dto.BookingRequestKafkaDTO;
+import com.dattp.productservice.dto.kafka.BookingRequestKafkaDTO;
 ;
 @EnableKafka
 @Configuration

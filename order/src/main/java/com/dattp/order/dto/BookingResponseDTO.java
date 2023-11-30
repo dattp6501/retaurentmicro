@@ -11,12 +11,27 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookingResponseDTO {
-    private int state;
     private long id;
+
     private long CustomerId;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
+    private String custemerFullname;
+
+    private int state;
+
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date date;
+
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date from;
+
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
+    private Date to;
+
+    private float deposits;
+
     private String description;
+
     private List<BookedTableResponseDTO> bookedTables;
     public BookingResponseDTO(){}
 }
