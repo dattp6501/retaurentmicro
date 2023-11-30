@@ -18,7 +18,10 @@ public class BookingRequestDTO {
     // private int state;
     // private long id;
     // private long customerId;
-    
+
+    @NotNull(message = "Tên người đặt(custemerFullname) không được để trống")
+    private String custemerFullname;
+
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     @NotNull(message = "Thời gian bắt đầu(from) không được bỏ trống")
     private Date from;

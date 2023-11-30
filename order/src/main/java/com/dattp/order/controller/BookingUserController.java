@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -108,15 +109,15 @@ public class BookingUserController {
             bk.getBookedTables().stream().forEach((t)->{
                 BookedTableResponseDTO BTR = new BookedTableResponseDTO();
                 BeanUtils.copyProperties(t, BTR);
-                // dish
-                BTR.setDishs(new ArrayList<>());
-                if(!t.getDishs().isEmpty()){
-                    t.getDishs().stream().forEach((d)->{
-                        BookedDishResponseDTO BDR = new BookedDishResponseDTO();
-                        BeanUtils.copyProperties(d, BDR);
-                        BTR.getDishs().add(BDR);
-                    });
-                }
+                // // dish
+                // BTR.setDishs(new ArrayList<>());
+                // if(!t.getDishs().isEmpty()){
+                //     t.getDishs().stream().forEach((d)->{
+                //         BookedDishResponseDTO BDR = new BookedDishResponseDTO();
+                //         BeanUtils.copyProperties(d, BDR);
+                //         BTR.getDishs().add(BDR);
+                //     });
+                // }
                 bkDTO.getBookedTables().add(BTR);
             });
             list.add(bkDTO);
@@ -126,6 +127,37 @@ public class BookingUserController {
                 HttpStatus.OK.value(), 
                 "Thành công",
                 list
+            )
+        );
+    }
+
+    @GetMapping("/get_booking_detail/{booking_id}")
+    @RolesAllowed({"ROLE_ORDER_ACCESS"})
+    public ResponseEntity<ResponseDTO> getBookingDetail(@PathVariable("booking_id") Long id) throws Exception{
+        Long userId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        BookingResponseDTO bkResp = new BookingResponseDTO();
+        Booking booking = bookingService.getByID(id);
+        if(userId.longValue() != booking.getCustomerId()) throw new Exception("Bạn không có lịch đặt này"); 
+        BeanUtils.copyProperties(booking, bkResp);
+        bkResp.setBookedTables(new ArrayList<>());
+        booking.getBookedTables().stream().forEach((t)->{
+            BookedTableResponseDTO BTR = new BookedTableResponseDTO();
+            BeanUtils.copyProperties(t, BTR);
+            BTR.setDishs(new ArrayList<>());
+            if(!t.getDishs().isEmpty()){
+                t.getDishs().stream().forEach((d)->{
+                    BookedDishResponseDTO BDR = new BookedDishResponseDTO();
+                    BeanUtils.copyProperties(d, BDR);
+                    BTR.getDishs().add(BDR);
+                });
+            }
+            bkResp.getBookedTables().add(BTR);
+        });
+        return ResponseEntity.ok().body(
+            new ResponseDTO(
+                HttpStatus.OK.value(), 
+                "Thành công",
+                bkResp
             )
         );
     }

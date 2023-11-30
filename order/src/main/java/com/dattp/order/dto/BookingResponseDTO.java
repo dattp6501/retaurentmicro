@@ -15,6 +15,8 @@ public class BookingResponseDTO {
 
     private long CustomerId;
 
+    private String custemerFullname;
+
     private int state;
 
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")

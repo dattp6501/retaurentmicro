@@ -17,6 +17,8 @@ public class TableRequestDTO {
     
     private long id;
 
+    private int state;
+
     @NotNull(message = "Thiếu trường dữ liệu name khi gửi đi") @NotEmpty(message = "Tên bàn không được để trống")
     private String name;
 

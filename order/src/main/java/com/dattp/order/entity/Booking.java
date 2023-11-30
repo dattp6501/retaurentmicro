@@ -34,6 +34,9 @@ public class Booking {
     @Column(name = "customer_id")
     private long CustomerId;
 
+    @Column(name="custemer_fullname")
+    private String custemerFullname;
+
     @Column(name = "date", nullable = false)
     // @CreatedDate
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")

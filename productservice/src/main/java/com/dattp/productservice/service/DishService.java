@@ -32,7 +32,7 @@ public class DishService {
     @Autowired
     private CommentDishRepository CommentDishRepository;
 
-    @Transactional
+    // @Transactional
     public Dish save(Dish dish){
         return dishRepository.save(dish);
     }

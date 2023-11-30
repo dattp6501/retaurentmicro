@@ -19,7 +19,6 @@ public class BookingKafkaListener {
     public void listenerResultCreateBookingTopic(@Payload BookingResponseDTO bookingResponse){
         // ket qua nhan vao la thong tin cua ban sau khi productservice kiem tra 
         // lang nghe su kien kiem tra don dat hang
-        System.out.println("========================= LISTEN checkOrder  ====================");
         bookingService.checkAndUpdateBooking(bookingResponse);
     }
 }

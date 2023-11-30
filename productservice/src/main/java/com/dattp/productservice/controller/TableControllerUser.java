@@ -45,17 +45,6 @@ public class TableControllerUser {
         tableService.getAll(pageable).getContent().forEach((t)->{
             TableResponseDTO tableResp = new TableResponseDTO();
             BeanUtils.copyProperties(t, tableResp);
-            // comment
-            if(t.getCommentTables()!=null){
-                tableResp.setComments(new ArrayList<>());
-                t.getCommentTables().stream().forEach((c)->{
-                    CommentTableResponseDTO cr = new CommentTableResponseDTO();
-                    BeanUtils.copyProperties(c, cr);
-                    cr.setUserId(c.getUser().getId());
-                    cr.setUsername(c.getUser().getUsername());
-                    tableResp.getComments().add(cr);
-                });
-            }
             list.add(tableResp);
         });
         return ResponseEntity.ok().body(
