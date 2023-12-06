@@ -206,8 +206,13 @@ public class TableService {
     @Transactional
     public boolean addComment(Long tableId, CommentTable comment){
         // if user commented
-        if(commentTableRepository.findByTableIdAndUserId(tableId, comment.getUser().getId())!=null)
+        try {
+            if(commentTableRepository.findByTableIdAndUserId(tableId, comment.getUser().getId())!=null)
             return commentTableRepository.update(comment.getStar(), comment.getComment(), tableId, comment.getUser().getId())>0;
         return commentTableRepository.save(comment.getStar(), comment.getComment(), tableId, comment.getUser().getId(), comment.getUser().getUsername())>=1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

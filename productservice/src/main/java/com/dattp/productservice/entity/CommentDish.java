@@ -30,7 +30,7 @@ public class CommentDish {
     @Column(name="star", nullable=false)
     private int star;
 
-    @Column(name="comment")
+    @Column(name="comment", columnDefinition = "LONGTEXT")
     private String comment;
 
     @Column(name = "date_")

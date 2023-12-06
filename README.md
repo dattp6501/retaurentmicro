@@ -26,11 +26,37 @@ LOGIN
 ![alt](./feature/login.png)
 REGISTER
 ![alt](./feature/register.png)
+HOME
+![alt](./feature/home.png)
+DISH
+![alt](./feature/search_dish.png)
+![alt](./feature/dish_detail.png)
+![alt](./feature/dish_comment.png)
+TABLE
+![alt](./feature/search_table_freetime.png)
+![alt](./feature/table_detail.png)
+CART
+![alt](./feature/cart.png)
+BOOKING DETAIL
+![alt](./feature/booking-detail.png)
+PAYMENT
+![alt](./feature/payment_order.png)
+![alt](./feature/payment_success.png)
+![alt](./feature/payment_error.png)
+NOTIFICATION
+![alt](./feature/noti_order_mail.png)
 # ====================================== MANAGE ======================================================
 BOOKING MANAGE
+![alt](./feature/manage_list_booking.png)
 ![alt](./feature/booking-manage.png)
-UPDATE TABLE
-![alt](./feature/update-table.png)
+TABLE MANAGE
+![alt](./feature/manage_list_table.png)
+![alt](./feature/manage_table_detail.png)
+DISH MANAGE
+![alt](./feature/manage_list_dish.png)
+![alt](./feature/manage_list_dish.png)
+<!-- VOUCHER MANAGE
+![alt](./feature/) -->
 # 
  SOA, Microservice, DDD pattern, API base
  saga : choreography và orchestration.

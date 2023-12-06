@@ -35,4 +35,10 @@ public class HandlerRequestException {
     public ResponseDTO handlerJSONParseException(JsonParseException e){
         return new ResponseDTO(HttpStatus.BAD_REQUEST.value(), e.getMessage(),null);
     }
+
+    @ExceptionHandler(value =Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO handlerException(Exception e){
+        return new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(),e.getMessage(),null);
+    }
 }
