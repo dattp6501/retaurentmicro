@@ -18,11 +18,19 @@ D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic notiOrd
 
 D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic createPaymentOrder --from-beginning --bootstrap-server localhost:9092
 
-# referrence
+# system architecture
 ![alt](./arch.png)
-
-
-
+# feature
+# ==================================== USER ========================================================
+LOGIN
+![alt](./feature/login.png)
+REGISTER
+![alt](./feature/register.png)
+# ====================================== MANAGE ======================================================
+BOOKING MANAGE
+![alt](./feature/booking-manage.png)
+UPDATE TABLE
+![alt](./feature/update-table.png)
 # 
  SOA, Microservice, DDD pattern, API base
  saga : choreography và orchestration.
