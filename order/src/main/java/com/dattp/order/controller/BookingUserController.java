@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dattp.order.config.ApplicationConfig;
 import com.dattp.order.dto.BookedDishResponseDTO;
 import com.dattp.order.dto.BookedTableResponseDTO;
+import com.dattp.order.dto.BookingDishRequestDTO;
 import com.dattp.order.dto.BookingRequestDTO;
 import com.dattp.order.dto.BookingResponseDTO;
 import com.dattp.order.dto.ResponseDTO;
+import com.dattp.order.entity.BookedDish;
 import com.dattp.order.entity.BookedTable;
 import com.dattp.order.entity.Booking;
 import com.dattp.order.exception.BadRequestException;
@@ -54,6 +56,7 @@ public class BookingUserController {
         // lay thong tin phieu dat ban
         BeanUtils.copyProperties(bookingR, booking);
         booking.setState(ApplicationConfig.DEFAULT_STATE);
+        booking.setPaid(false);
         booking.setCustomerId(
             Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName())
         );
@@ -93,6 +96,26 @@ public class BookingUserController {
         );
     }
 
+    @PostMapping(value = "/add_dish")
+    @RolesAllowed({"ROLE_ORDER_NEW"})
+    public ResponseEntity<ResponseDTO> addDish(@RequestBody @Valid BookingDishRequestDTO bookingDishRequestDTO) throws Exception{
+        List<BookedDish> dishs = new ArrayList<>();
+        bookingDishRequestDTO.getDishs().stream().forEach((dResp)->{
+            BookedDish dish = new BookedDish();
+            BeanUtils.copyProperties(dResp, dish);
+            dish.setState(ApplicationConfig.DEFAULT_STATE);
+            dishs.add(dish);
+        });
+        bookingService.addDish(bookingDishRequestDTO.getId(), dishs);
+        return ResponseEntity.ok().body(
+            new ResponseDTO(
+                HttpStatus.OK.value(),
+                "Thành công",
+                null
+            )
+        );
+    }
+    
     // get all booking of user
     @GetMapping("/get_booking")
     @RolesAllowed({"ROLE_ORDER_ACCESS"})
@@ -109,15 +132,6 @@ public class BookingUserController {
             bk.getBookedTables().stream().forEach((t)->{
                 BookedTableResponseDTO BTR = new BookedTableResponseDTO();
                 BeanUtils.copyProperties(t, BTR);
-                // // dish
-                // BTR.setDishs(new ArrayList<>());
-                // if(!t.getDishs().isEmpty()){
-                //     t.getDishs().stream().forEach((d)->{
-                //         BookedDishResponseDTO BDR = new BookedDishResponseDTO();
-                //         BeanUtils.copyProperties(d, BDR);
-                //         BTR.getDishs().add(BDR);
-                //     });
-                // }
                 bkDTO.getBookedTables().add(BTR);
             });
             list.add(bkDTO);
@@ -139,20 +153,22 @@ public class BookingUserController {
         Booking booking = bookingService.getByID(id);
         if(userId.longValue() != booking.getCustomerId()) throw new Exception("Bạn không có lịch đặt này"); 
         BeanUtils.copyProperties(booking, bkResp);
+        // table
         bkResp.setBookedTables(new ArrayList<>());
         booking.getBookedTables().stream().forEach((t)->{
             BookedTableResponseDTO BTR = new BookedTableResponseDTO();
             BeanUtils.copyProperties(t, BTR);
-            BTR.setDishs(new ArrayList<>());
-            if(!t.getDishs().isEmpty()){
-                t.getDishs().stream().forEach((d)->{
-                    BookedDishResponseDTO BDR = new BookedDishResponseDTO();
-                    BeanUtils.copyProperties(d, BDR);
-                    BTR.getDishs().add(BDR);
-                });
-            }
             bkResp.getBookedTables().add(BTR);
         });
+        // dish
+        bkResp.setDishs(new ArrayList<>());
+        if(!booking.getDishs().isEmpty()){
+            booking.getDishs().stream().forEach((d)->{
+                BookedDishResponseDTO BDR = new BookedDishResponseDTO();
+                BeanUtils.copyProperties(d, BDR);
+                bkResp.getDishs().add(BDR);
+            });
+        }
         return ResponseEntity.ok().body(
             new ResponseDTO(
                 HttpStatus.OK.value(), 

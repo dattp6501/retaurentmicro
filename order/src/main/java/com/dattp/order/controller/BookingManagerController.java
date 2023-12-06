@@ -47,15 +47,6 @@ public class BookingManagerController {
             bk.getBookedTables().stream().forEach((t)->{
                 BookedTableResponseDTO BTResp = new BookedTableResponseDTO();
                 BeanUtils.copyProperties(t, BTResp);
-                // dish
-                BTResp.setDishs(new ArrayList<>());
-                if(!t.getDishs().isEmpty()){
-                    t.getDishs().stream().forEach((d)->{
-                        BookedDishResponseDTO BDResp = new BookedDishResponseDTO();
-                        BeanUtils.copyProperties(d, BDResp);
-                        BTResp.getDishs().add(BDResp);
-                    });
-                }
                 BkResp.getBookedTables().add(BTResp);
             });
             list.add(BkResp);
@@ -75,20 +66,22 @@ public class BookingManagerController {
         BookingResponseDTO bkResp = new BookingResponseDTO();
         Booking booking = bookingService.getByID(id);
         BeanUtils.copyProperties(booking, bkResp);
+        // table
         bkResp.setBookedTables(new ArrayList<>());
         booking.getBookedTables().stream().forEach((t)->{
             BookedTableResponseDTO BTR = new BookedTableResponseDTO();
             BeanUtils.copyProperties(t, BTR);
-            BTR.setDishs(new ArrayList<>());
-            if(!t.getDishs().isEmpty()){
-                t.getDishs().stream().forEach((d)->{
-                    BookedDishResponseDTO BDR = new BookedDishResponseDTO();
-                    BeanUtils.copyProperties(d, BDR);
-                    BTR.getDishs().add(BDR);
-                });
-            }
             bkResp.getBookedTables().add(BTR);
         });
+        // dish
+        bkResp.setDishs(new ArrayList<>());
+        if(!booking.getDishs().isEmpty()){
+            booking.getDishs().stream().forEach((d)->{
+                BookedDishResponseDTO BDR = new BookedDishResponseDTO();
+                BeanUtils.copyProperties(d, BDR);
+                bkResp.getDishs().add(BDR);
+            });
+        }
         return ResponseEntity.ok().body(
             new ResponseDTO(
                 HttpStatus.OK.value(), 
@@ -101,7 +94,7 @@ public class BookingManagerController {
     @PostMapping
     @RequestMapping("/cancel_booking")
     @RolesAllowed({"ROLE_ORDER_UPDATE", "ROLE_ORDER_UPDATE"})
-    public ResponseEntity<ResponseDTO> cancelBooking(@RequestBody HashMap<String,String> req){
+    public ResponseEntity<ResponseDTO> cancelBooking(@RequestBody HashMap<String,String> req) throws Exception{
         Long id = Long.parseLong(req.get("id"));
         bookingService.cancelBooking(id);
         return ResponseEntity.ok().body(
@@ -116,7 +109,7 @@ public class BookingManagerController {
     @PostMapping
     @RequestMapping("/confirm_booking")
     @RolesAllowed({"ROLE_ORDER_UPDATE", "ROLE_ORDER_UPDATE"})
-    public ResponseEntity<ResponseDTO> confirmBooking(@RequestBody HashMap<String,String> req){
+    public ResponseEntity<ResponseDTO> confirmBooking(@RequestBody HashMap<String,String> req) throws Exception{
         Long id = Long.parseLong(req.get("id"));
         bookingService.confirmBooking(id);
         return ResponseEntity.ok().body(

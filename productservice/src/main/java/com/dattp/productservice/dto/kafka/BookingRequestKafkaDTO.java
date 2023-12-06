@@ -2,6 +2,7 @@ package com.dattp.productservice.dto.kafka;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -26,13 +27,7 @@ public class BookingRequestKafkaDTO {
     private Date to;
     private String description;
     private Collection<BookedTableRequestKafkaDTO> bookedTables;
-    public BookingRequestKafkaDTO(long id, long customerId, Date date, String description, Collection<BookedTableRequestKafkaDTO> bookedTables) {
-        this.id = id;
-        CustomerId = customerId;
-        this.date = date;
-        this.description = description;
-        this.bookedTables = bookedTables;
-    }
+    private List<BookedDishRequestKafkaDTO> dishs;
     public BookingRequestKafkaDTO() {
     }
 }

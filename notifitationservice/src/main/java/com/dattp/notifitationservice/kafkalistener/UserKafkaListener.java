@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import com.dattp.notifitationservice.dto.UserRequestKafkaDTO;
+import com.dattp.notifitationservice.dto.kafka.UserRequestKafkaDTO;
 import com.dattp.notifitationservice.service.SendMailService;
 
 @Component
@@ -19,7 +19,7 @@ public class UserKafkaListener {
     @Value("${mail.password}")
     private String MAIL_PASSWORD;
 
-    @KafkaListener(topics = "new-user",groupId = "group1", containerFactory = "factoryUser")
+    @KafkaListener(topics = "newUser",groupId = "group1", containerFactory = "factoryUser")
     public void listenNewUser(UserRequestKafkaDTO userRequestKafkaDTO){
         System.out.println("======================   NEW USER   ========================");
         System.out.println(userRequestKafkaDTO.getUsername());

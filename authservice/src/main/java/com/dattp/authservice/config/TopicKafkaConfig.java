@@ -9,11 +9,11 @@ import org.springframework.kafka.config.TopicBuilder;
 public class TopicKafkaConfig {
     @Bean
     public NewTopic newUserTopic(){
-        return TopicBuilder.name("new-user").build();
+        return TopicBuilder.name("newUser").build();
     }
 
     @Bean
     public NewTopic verifiUserTopic(){
-        return TopicBuilder.name("verifi-user").build();
+        return TopicBuilder.name("verifiUser").build();
     }
 }

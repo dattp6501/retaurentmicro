@@ -11,12 +11,7 @@ public class BookedDishResponseDTO {
     private long dishId;
     private int total;
     private float price;
-    public BookedDishResponseDTO(long id, long dishId, int total, float price) {
-        this.id = id;
-        this.dishId = dishId;
-        this.total = total;
-        this.price = price;
-    }
+    private String name;
     public BookedDishResponseDTO() {
     }
     @Override

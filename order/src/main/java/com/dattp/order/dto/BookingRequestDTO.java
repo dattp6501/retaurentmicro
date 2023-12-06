@@ -36,6 +36,9 @@ public class BookingRequestDTO {
     @JsonProperty("tables")
     private List<BookedTableRequestDTO> bookedTables;
 
+    @Valid
+    private List<BookedDishRequestDTO> dishs;
+
     private String description;
 
 }

@@ -22,7 +22,5 @@ public interface BookedDishRepository extends JpaRepository<BookedDish,Long>{
     +"WHERE d.id = :id ", nativeQuery = true)
     public int updateState(@Param("id") List<Long> ids, @Param("state") Integer state);
 
-    @Modifying
-    @Query(value = "DELETE FROM BOOKED_DISH b WHERE b.booked_table_id=:bookedTableId", nativeQuery = true)
-    public int removeAllByBookedTableID(@Param("bookedTableId") Long bookedTableId);
+    
 }

@@ -19,6 +19,8 @@ public class BookingResponseDTO {
 
     private int state;
 
+    private boolean paid;
+
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date date;
 
@@ -33,5 +35,8 @@ public class BookingResponseDTO {
     private String description;
 
     private List<BookedTableResponseDTO> bookedTables;
+
+    private List<BookedDishResponseDTO> dishs;
+    
     public BookingResponseDTO(){}
 }
