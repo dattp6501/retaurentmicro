@@ -20,11 +20,11 @@ public class BookingKafkaListener {
     @Value("${payment.url}")
     private String urlPayment;
 
-    // @Value("${mail.username}")
-    private String MAIL_USERNAME = "kiennc.b19at101@stu.ptit.edu.vn";
+    @Value("${mail.username}")
+    private String MAIL_USERNAME;
 
-    // @Value("${mail.password}")
-    private String MAIL_PASSWORD = "3Au5Re9U";
+    @Value("${mail.password}")
+    private String MAIL_PASSWORD;
 
     // sent after confirmation by the manager(orderservice send)
     @KafkaListener(topics = "notiOrder", groupId = "group1", containerFactory = "factoryBooking")
