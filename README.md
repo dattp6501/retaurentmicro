@@ -20,11 +20,17 @@ D:\kafka\kafka_2.13-3.6.0\bin\windows\kafka-console-consumer.bat --topic createP
 
 # system architecture
 ![alt](./arch.png)
-
-
-
+# feature
+# ==================================== USER ========================================================
+LOGIN
+![alt](./feature/login.png)
+REGISTER
+![alt](./feature/register.png)
+# ====================================== MANAGE ======================================================
+BOOKING MANAGE
+![alt](./feature/booking-manage.png)
+UPDATE TABLE
+![alt](./feature/update-table.png)
 # 
  SOA, Microservice, DDD pattern, API base
  saga : choreography và orchestration.
- #feature
- <img src="[relative/path/in/repository/to/image.svg](https://github.com/dattp6501/retaurentmicroservices/blob/main/arch.png)https://github.com/dattp6501/retaurentmicroservices/blob/main/arch.png" width="128"/>
