@@ -34,7 +34,7 @@ public class CommentTable {
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date date;
 
-    @Column(name="comment")
+    @Column(name="comment", columnDefinition = "LONGTEXT")
     private String comment;
 
     @Embedded
