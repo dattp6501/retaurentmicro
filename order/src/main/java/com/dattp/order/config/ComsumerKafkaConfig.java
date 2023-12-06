@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,15 +24,15 @@ import com.dattp.order.dto.kafka.UserKafka;
 public class ComsumerKafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
-    // create booking
+    
     public Map<String, Object> comsumerConfigJSON(){
         Map<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        // props.put(ConsumerConfig.GROUP_ID_CONFIG, "Group1");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         return props;
     }
+    // result check booking
     @Bean
     public ConsumerFactory<String,BookingResponseDTO> consumerFactoryBooking(){
         JsonDeserializer<BookingResponseDTO> jsonDeserializer = new JsonDeserializer<>(BookingResponseDTO.class,false);
@@ -43,7 +44,7 @@ public class ComsumerKafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String,BookingResponseDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryBooking);
         return factory;
-    } 
+    }
     // user
     @Bean
     public ConsumerFactory<String,UserKafka> consumerFactoryUser(){
@@ -61,10 +62,8 @@ public class ComsumerKafkaConfig {
     public Map<String, Object> comsumerConfigString(){
         Map<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        // props.put(ConsumerConfig.GROUP_ID_CONFIG, "group2");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        // props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return props;
     }
     @Bean
@@ -75,6 +74,24 @@ public class ComsumerKafkaConfig {
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,String>> factoryString(ConsumerFactory<String,String> consumerFactoryString){
         ConcurrentKafkaListenerContainerFactory<String,String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryString);
+        return factory;
+    } 
+    // long
+    public Map<String, Object> comsumerLongConfig(){
+        Map<String,Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
+        return props;
+    }
+    @Bean
+    public ConsumerFactory<String,Long> consumerLongFactory(){
+        return new DefaultKafkaConsumerFactory<>(comsumerLongConfig());
+    }
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,Long>> factoryLong(ConsumerFactory<String,Long> consumerFactory){
+        ConcurrentKafkaListenerContainerFactory<String,Long> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
         return factory;
     } 
 }

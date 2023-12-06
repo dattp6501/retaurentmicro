@@ -9,11 +9,16 @@ import org.springframework.kafka.config.TopicBuilder;
 public class TopicKafkaConfig {
     @Bean
     public NewTopic newUserTopic(){
-        return TopicBuilder.name("new-user").build();
+        return TopicBuilder.name("newUser").build();
     }
 
     @Bean
-    public NewTopic newNotificationOrderTopic(){
-        return TopicBuilder.name("noti-order").build();
+    public NewTopic notificationOrderTopic(){
+        return TopicBuilder.name("notiOrder").build();
+    }
+
+    @Bean
+    public NewTopic paymentOrderTopic(){
+        return TopicBuilder.name("paymentsOrder").build();
     }
 }

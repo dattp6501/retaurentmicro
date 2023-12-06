@@ -1,6 +1,5 @@
 package com.dattp.productservice.dto.kafka;
 
-import java.util.Collection;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,15 +21,13 @@ public class BookedTableRequestKafkaDTO {
     
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date to;
-    private Collection<BookedDishRequestKafkaDTO> dishs;
-    public BookedTableRequestKafkaDTO(long id, long tableId, String name, float price, Date from, Date to, Collection<BookedDishRequestKafkaDTO> dishs) {
+    public BookedTableRequestKafkaDTO(long id, long tableId, String name, float price, Date from, Date to) {
         this.id = id;
         this.tableId = tableId;
         this.name = name;
         this.price = price;
         this.from = from;
         this.to = to;
-        this.dishs = dishs;
     }
     public BookedTableRequestKafkaDTO() {
     }

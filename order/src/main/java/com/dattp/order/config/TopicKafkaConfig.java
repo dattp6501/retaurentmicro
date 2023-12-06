@@ -7,14 +7,36 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class TopicKafkaConfig {
+    // booking
     @Bean
-    public NewTopic createBookingTopic(){
+    public NewTopic createBookingTopic(){//check info booking
         return TopicBuilder.name("newOrder").build();
     }
 
     @Bean
-    public NewTopic resultCheckBookingTopic(){
+    public NewTopic resultCheckBookingTopic(){//result check info booking
         return TopicBuilder.name("checkOrder").build();
+    }
+    // dish
+    @Bean
+    public NewTopic checkBookedDishTopic(){//check info booked dish
+        return TopicBuilder.name("checkBookedDish").build();
+    }
+
+    @Bean
+    public NewTopic resultCheckBookedDishTopic(){//result check info booked dish
+        return TopicBuilder.name("resultCheckBookedDish").build();
+    }
+
+    // payment
+    @Bean
+    public NewTopic createPaymentOrderTopic(){//save info payment
+        return TopicBuilder.name("createPaymentOrder").build();
+    }
+
+    @Bean
+    public NewTopic paymentOrderSuccessTopic(){//update info booking
+        return TopicBuilder.name("paymentOrderSuccess").build();
     }
 
     @Bean
@@ -24,6 +46,6 @@ public class TopicKafkaConfig {
 
     @Bean
     public NewTopic newUserTopic(){
-        return TopicBuilder.name("new-user").build();
+        return TopicBuilder.name("newUser").build();
     }
 }

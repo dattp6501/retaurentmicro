@@ -1,20 +1,25 @@
 package com.dattp.order.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.dattp.order.config.ApplicationConfig;
+import com.dattp.order.dto.BookedDishResponseDTO;
 import com.dattp.order.dto.BookedTableResponseDTO;
 import com.dattp.order.dto.BookingResponseDTO;
+import com.dattp.order.entity.BookedDish;
 import com.dattp.order.entity.Booking;
 import com.dattp.order.exception.BadRequestException;
 import com.dattp.order.exception.NotfoundException;
@@ -35,6 +40,8 @@ public class BookingService {
     @Autowired
     private BookedTableService bookedTableService;
     @Autowired
+    private BookedDishService bookedDishService;
+    @Autowired
     private KafkaTemplate<String,BookingResponseDTO> bookingKafkaTemplate;
 
     @Transactional
@@ -47,6 +54,31 @@ public class BookingService {
         Booking newBooking = bookingRepository.save(booking);
         cartService.deleteAllTable(newBooking.getCustomerId());
         return newBooking;
+    }
+
+    @Transactional
+    public void addDish(Long bookingId, List<BookedDish> dishs) throws Exception{
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow();
+        if(booking.getState()==ApplicationConfig.DEFAULT_STATE)
+            throw new Exception("Phiếu đặt bàn đang được xử lý, vui lòng đặt món sau khi xử lý xong");
+        for(BookedDish bd: dishs){//set booking for dish
+            bd.setBooking(booking);
+            // dish was placed on the menu
+            if(booking.getDishs().contains(bd)) throw new Exception(bd.getName() + "Đã có trong thực đơn");
+        }
+        bookedDishRepository.saveAll(dishs);
+        Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());//get id user from access_token
+        cartService.deleteAllDish(id);//delete all dish in cart of user
+        // send message to check
+        BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
+        bookingResponseDTO.setId(bookingId.longValue());
+        bookingResponseDTO.setDishs(new ArrayList<>());
+        dishs.forEach((bd)->{
+            BookedDishResponseDTO bdResp = new BookedDishResponseDTO();
+            BeanUtils.copyProperties(bd, bdResp);
+            bookingResponseDTO.getDishs().add(bdResp);
+        });
+        bookingKafkaTemplate.send("checkBookedDish",bookingResponseDTO);
     }
 
     public Booking getByID(Long id){
@@ -66,6 +98,7 @@ public class BookingService {
         // neu don hang khong ton tai
         if(!bookingRepository.existsById(bookingResponse.getId())) return;
         //lay danh sach ban co the dat duoc(state != 0) va cap nhat trang thai cua ban, va xoa cac ban khong ton tai
+        bookingResponse.setDeposits(100000);
         List<BookedTableResponseDTO> bookedTableSuccess = bookingResponse.getBookedTables().stream()
             .filter(t->bookedTableService.existsById(t.getId()))//lay tat ca ca ban dat ton tai
             .peek((t)->{
@@ -79,8 +112,25 @@ public class BookingService {
             .collect(Collectors.toList());
         if(bookedTableSuccess==null || bookedTableSuccess.size()<=0)
             bookingRepository.deleteById(bookingResponse.getId());
-        else bookingRepository.updateState(bookingResponse.getId(), ApplicationConfig.WATING_STATE);
-        bookingKafkaTemplate.send("notiOrder",bookingResponse);
+        else{
+            bookingRepository.updateState(bookingResponse.getId(), ApplicationConfig.WATING_STATE);
+            bookingRepository.updateDeposits(bookingResponse.getId(), bookingResponse.getDeposits());
+        }
+        // if order error
+        // bookingKafkaTemplate.send("notiOrder",bookingResponse);
+    }
+
+    @Transactional
+    public void checkAndUpdateDish(Booking booking){
+        // neu don hang khong ton tai
+        if(!bookingRepository.existsById(booking.getId())) return;
+        booking.getDishs().stream().forEach((bd)->{
+            if(bookedDishRepository.existsById(bd.getId())){// if dish exist
+                if(bd.getState()==ApplicationConfig.NOT_FOUND_STATE)//delete dish not found
+                    bookedDishRepository.deleteById(bd.getId());
+                else bookedDishService.update(bd);// update full info dish
+            }
+        });
     }
 
     public void delete(Long id){
@@ -97,11 +147,12 @@ public class BookingService {
     }
 
     @Transactional
-    public void cancelBooking(Long bookingId){
+    public void cancelBooking(Long bookingId) throws Exception{
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
+        if(booking.getState()!=ApplicationConfig.CANCEL_STATE)
+            throw new Exception("Phiếu đã được đóng");
+        bookedDishRepository.deleteAll(booking.getDishs());
         booking.getBookedTables().stream().forEach((t)->{
-            // delete all dish 
-            bookedDishRepository.deleteAll(t.getDishs());
             // update state booked table
             bookedTableRepository.updateState(t.getId(), ApplicationConfig.CANCEL_STATE);
         });
@@ -109,18 +160,51 @@ public class BookingService {
     }
 
     @Transactional
-    public void confirmBooking(Long bookingId){
+    public void confirmBooking(Long bookingId) throws Exception{
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
+        //If the order is not check order
+        if(booking.getState()==ApplicationConfig.DEFAULT_STATE)
+            throw new Exception("Hệ thống đang kiểm tra phiếu đặt này");
+        //If the order is not waiting
+        if(booking.getState()!=ApplicationConfig.WATING_STATE)
+            throw new Exception("Phiếu đã được xử lý");
+        
+        // update state booked table
         booking.getBookedTables().stream().forEach((t)->{
-            // update state booked dish
-            if(!t.getDishs().isEmpty()){
-                t.getDishs().stream().forEach((d)->{
-                    bookedDishRepository.updateState(d.getId(), ApplicationConfig.OK_STATE);
-                });
-            }
-            // update state booked table
             bookedTableRepository.updateState(t.getId(), ApplicationConfig.OK_STATE);
         });
+        // update state booked dish
+        if(!booking.getDishs().isEmpty()){
+            booking.getDishs().stream().forEach((d)->{
+                bookedDishRepository.updateState(d.getId(), ApplicationConfig.OK_STATE);
+            });
+        }
         bookingRepository.updateState(bookingId, ApplicationConfig.OK_STATE);
+
+        // update success
+        BookingResponseDTO bkResp = new BookingResponseDTO();
+        BeanUtils.copyProperties(booking, bkResp);
+        // table
+        bkResp.setBookedTables(new ArrayList<>());
+        booking.getBookedTables().forEach((t)->{
+            BookedTableResponseDTO tResp = new BookedTableResponseDTO();
+            BeanUtils.copyProperties(t, tResp);
+            bkResp.getBookedTables().add(tResp);
+        });
+        // dish
+        if(!booking.getDishs().isEmpty()){
+            booking.getDishs().forEach((d)->{
+                BookedDishResponseDTO dResp = new BookedDishResponseDTO();
+                BeanUtils.copyProperties(d, dResp);
+                bkResp.getDishs().add(dResp);
+            });
+        }
+        bookingKafkaTemplate.send("createPaymentOrder",bkResp);//send info order need payment
+        bookingKafkaTemplate.send("notiOrder",bkResp);//send notification order success, required payment
+    }
+
+    @Transactional
+    public int updatePaid(Long bookingId, boolean paid){
+        return bookingRepository.updatePaid(bookingId, paid);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaTopicConfig {
+    // booking
     @Bean
     public NewTopic checkOrderTopic(){
         return TopicBuilder.name("checkOrder").build();
@@ -14,5 +15,15 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic newOrderTopic(){
         return TopicBuilder.name("newOrder").build();
+    }
+    // dish
+    @Bean
+    public NewTopic checkBookedDishTopic(){//check info booked dish
+        return TopicBuilder.name("checkBookedDish").build();
+    }
+
+    @Bean
+    public NewTopic resultCheckBookedDishTopic(){//result check info booked dish
+        return TopicBuilder.name("resultCheckBookedDish").build();
     }
 }

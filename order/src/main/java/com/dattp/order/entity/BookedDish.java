@@ -40,16 +40,18 @@ public class BookedDish {
     private float price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booked_table_id")
+    @JoinColumn(name = "booking_id")
     @JsonIgnore
-    private BookedTable table;
+    private Booking booking;
 
     public BookedDish(){}
 
     @Override
     public boolean equals(Object obj) {
         BookedDish other = (BookedDish) obj;
-        return this.id == other.id;
+        if(this.id == other.id) return this.id == other.id;
+        // dish was placed on the menu
+        return this.booking.getId()==other.booking.getId()&&this.dishId==other.dishId;
     }
 
 }

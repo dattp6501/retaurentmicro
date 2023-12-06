@@ -55,7 +55,7 @@ public class UserController {
         BeanUtils.copyProperties(newUser, userResp);
         // gui thong diep den notification service de gui thong bao xac thuc
         try {
-            kafkaTemplateUser.send("new-user", userResp);
+            kafkaTemplateUser.send("newUser", userResp);
         } catch (Exception e) {
             e.printStackTrace();
         }

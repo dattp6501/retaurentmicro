@@ -99,6 +99,7 @@ public class DishService {
     public Page<Dish> getDishs(Pageable pageable){
         return dishRepository.findAll(pageable);
     }
+    
     public Dish getById(long id){
         return dishRepository.findById(id).orElse(null);
     }

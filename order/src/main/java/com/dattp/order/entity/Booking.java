@@ -55,11 +55,17 @@ public class Booking {
     @Column(name = "deposits")
     private float deposits;
 
+    @Column(name = "paid", nullable = false)
+    private boolean paid;
+
     @Column(name = "desciption")
     private String description;
 
     @OneToMany(mappedBy = "booking", cascade ={CascadeType.ALL}, fetch=FetchType.LAZY )
     private List<BookedTable> bookedTables;
+
+    @OneToMany(mappedBy="booking", cascade={CascadeType.ALL})
+    private List<BookedDish> dishs;
 
     public Booking(){
         super();

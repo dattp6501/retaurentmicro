@@ -22,11 +22,14 @@ public class Cart {
     @Column(name="id") @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<TableInCart> tables;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<DishInCart> dishs;
 
     public Cart() {
         super();

@@ -20,19 +20,6 @@ import javax.persistence.Column;
 @Getter
 @Setter
 public class TableInCart {
-    public TableInCart(Long id, Long tableId, String name, float price, Cart cart) {
-        this.id = id;
-        this.tableId = tableId;
-        this.name = name;
-        this.price = price;
-        this.cart = cart;
-    }
-
-    public TableInCart() {
-        super();
-    }
-
-
     @Column(name = "id") @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -49,4 +36,8 @@ public class TableInCart {
     @JoinColumn(name = "cart_id")
     @JsonIgnore
     private Cart cart;
+
+    public TableInCart() {
+        super();
+    }
 }

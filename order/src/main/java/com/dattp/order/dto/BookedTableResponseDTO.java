@@ -1,7 +1,5 @@
 package com.dattp.order.dto;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,13 +11,11 @@ public class BookedTableResponseDTO {
     private long tableId;
     private float price;
     private String name;
-    private List<BookedDishResponseDTO> dishs;
-    public BookedTableResponseDTO(long id, long tableId, String name, float price, List<BookedDishResponseDTO> dishs) {
+    public BookedTableResponseDTO(long id, long tableId, String name, float price) {
         this.id = id;
         this.tableId = tableId;
         this.name = name;
         this.price = price;
-        this.dishs = dishs;
     }
     public BookedTableResponseDTO() {
     }
