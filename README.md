@@ -38,8 +38,10 @@ TABLE
 CART
 ![alt](./feature/cart.png)
 BOOKING DETAIL
+![alt](./feature/booking_schedule.png)
 ![alt](./feature/booking-detail.png)
 PAYMENT
+![alt](./feature/infor_booking_payment.png)
 ![alt](./feature/payment_order.png)
 ![alt](./feature/payment_success.png)
 ![alt](./feature/payment_error.png)
@@ -54,7 +56,7 @@ TABLE MANAGE
 ![alt](./feature/manage_table_detail.png)
 DISH MANAGE
 ![alt](./feature/manage_list_dish.png)
-![alt](./feature/manage_list_dish.png)
+![alt](./feature/manage_dish_detail.png)
 <!-- VOUCHER MANAGE
 ![alt](./feature/) -->
 # 

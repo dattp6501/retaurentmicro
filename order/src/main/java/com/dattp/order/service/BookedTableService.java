@@ -41,12 +41,13 @@ public class BookedTableService {
         return bookedTableRepository.saveAll(bookedTables);
     }
 
-    public boolean updateState(Long id, Integer state){
-        return bookedTableRepository.updateState(id, state)>0;
-    }
-
-    public void removeById(Long id){
-        bookedTableRepository.deleteById(id);
+    public void update(BookedTable bookedTable){
+        BookedTable bookedTableSrc = bookedTableRepository.findById(bookedTable.getId()).orElse(null);
+        if(bookedTableSrc==null) return;
+        if(bookedTable.getPrice()>0) bookedTableSrc.setPrice(bookedTable.getPrice());
+        if(!bookedTable.getName().isEmpty()) bookedTableSrc.setName(bookedTable.getName());
+        bookedTableSrc.setState(bookedTable.getState());
+        bookedTableRepository.save(bookedTableSrc);
     }
 
     public boolean existsById(long id){

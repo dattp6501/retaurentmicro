@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin thanh toán</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/e7c3a3eb40.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="vh-100 d-flex justify-content-center align-items-center" th:object="${data}">
+        <div class="col-md-5">
+            <!-- <div class="card bg-white shadow p-5">
+                <div class="text-center">
+                    <h1>Thông tin chi tiết</h1>
+                    <div class="col-md-12" style="margin:30px auto;">
+                        <form th:action="@{/api/payment/user/create_payment/}" th:object="${booking}" method="POST">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" name="id" th:value="${booking.id}" class="form-control" disabled/>
+                                        <label>Mã phiếu:</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Tổng tiền:</span>
+                                        <input type="number" th:value="${booking.deposits}" class="form-control" disabled />
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Tên khách hàng:</span>
+                                        <input type="text" th:value="${booking.custemerFullname}" class="form-control" disabled />
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Ngày đặt:</span>
+                                        <input type="text" th:value="${booking.date}" class="form-control" disabled />
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Thời gian bắt đầu:</span>
+                                        <input type="text" th:value="${booking.from}" class="form-control" disabled />
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Thời gian kết thúc:</span>
+                                        <input type="text" th:value="${booking.from}" class="form-control" disabled />
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Chọn phương thức thanh toán:</span>
+                                        <input type="text" name="type" value="VNPAY" class="form-control" required />
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input type="submit" value="Thanh toán ngay" class="btn btn-success form-control" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> -->
+            <div class="card">
+                <div class="card-body mx-4">
+                    <div class="container">
+                        <form th:action="@{/api/payment/user/create_payment/}" name="infoBookingForm" th:object="${booking}" method="POST">
+                            <div class="row text-center">
+                                <h1>Thông tin chi tiết</h1>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4">
+                                    <p>Tên khách hàng: </p>
+                                </div>
+                                <div class="col-xl-8">
+                                    <p th:utext="${booking.custemerFullname}" class="float-end"></p>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4">
+                                    <p>Mã phiếu: </p>
+                                </div>
+                                <div class="col-xl-8 text-end">
+                                    <input type="number" name="id" th:value="${booking.id}"
+                                        style="text-align:right;background-color:#ffffff;border:none;"/>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4">
+                                    <p>Ngày đặt</p>
+                                </div>
+                                <div class="col-xl-8">
+                                    <p th:utext="${dateFormat.format(booking.date)}" class="float-end">
+                                    </p>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4">
+                                    <p>Bắt đầu</p>
+                                </div>
+                                <div class="col-xl-8">
+                                    <p th:utext="${dateFormat.format(booking.from)}" class="float-end">
+                                    </p>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4">
+                                    <p>Kết thúc</p>
+                                </div>
+                                <div class="col-xl-8">
+                                    <p th:utext="${dateFormat.format(booking.to)}" class="float-end">
+                                    </p>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="row text-black">
+                                <div class="col-xl-12">
+                                    <p class="float-end fw-bold">Tổng tiền:
+                                        <span th:utext="${booking.deposits+' VNĐ'}"></span>
+                                    </p>
+                                </div>
+                                <hr style="border: 2px solid black;">
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8">
+                                    <p>Phương thúc thanh toán</p>
+                                </div>
+                            </div>
+                            <div class="row text-black">
+                                <div class="col-xl-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="type" value="DEFAULT">
+                                        <label class="form-check-label">
+                                            DEFAULT
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="type" value="VNPAY">
+                                        <label class="form-check-label">
+                                            VNPAY
+                                        </label>
+                                    </div>
+                                </div>
+                                <div th:utext="${message}" class="col-xl-12" style="color:#ff0000;"></div>
+                                <hr style="border: 2px solid black;">
+                            </div>
+                            <div class="text-center" style="margin-top: 20px;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="submit" value="Thanh toán ngay"
+                                            class="btn btn-success form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
