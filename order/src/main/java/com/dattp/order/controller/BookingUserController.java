@@ -106,7 +106,7 @@ public class BookingUserController {
             dish.setState(ApplicationConfig.DEFAULT_STATE);
             dishs.add(dish);
         });
-        bookingService.addDish(bookingDishRequestDTO.getId(), dishs);
+        bookingService.addDishToBooking(bookingDishRequestDTO.getId(), dishs);
         return ResponseEntity.ok().body(
             new ResponseDTO(
                 HttpStatus.OK.value(),

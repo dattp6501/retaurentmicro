@@ -20,19 +20,17 @@ import com.dattp.order.dto.BookedDishResponseDTO;
 import com.dattp.order.dto.BookedTableResponseDTO;
 import com.dattp.order.dto.BookingResponseDTO;
 import com.dattp.order.entity.BookedDish;
+import com.dattp.order.entity.BookedTable;
 import com.dattp.order.entity.Booking;
 import com.dattp.order.exception.BadRequestException;
 import com.dattp.order.exception.NotfoundException;
 import com.dattp.order.repository.BookedDishRepository;
-import com.dattp.order.repository.BookedTableRepository;
 import com.dattp.order.repository.BookingRepository;
 
 @Service
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
-    @Autowired
-    private BookedTableRepository bookedTableRepository;
     @Autowired
     private BookedDishRepository bookedDishRepository;
     @Autowired
@@ -56,8 +54,54 @@ public class BookingService {
         return newBooking;
     }
 
+    public Booking getByID(Long id){
+        return bookingRepository.findById(id).orElse(null);
+    }
+
+    public Page<Booking> getByCustemerId(long custemerId,Pageable pageable){
+        return bookingRepository.getAllByCustomerId(custemerId, pageable);
+    }
+
+    public void delete(Long id){
+        Booking booking = bookingRepository.findById(id).orElse(null);
+        if(booking==null) throw new NotfoundException("Đơn hàng không tồn tại");
+        bookingRepository.delete(booking);
+    }
+    
     @Transactional
-    public void addDish(Long bookingId, List<BookedDish> dishs) throws Exception{
+    public void checkAndUpdateBooking(BookingResponseDTO bookingResponse){
+        // neu don hang khong ton tai
+        if(!bookingRepository.existsById(bookingResponse.getId())) return;
+        //lay danh sach ban co the dat duoc(state != 0) va cap nhat trang thai cua ban, va xoa cac ban khong ton tai
+        List<BookedTableResponseDTO> bookedTableSuccess = bookingResponse.getBookedTables().stream()
+            .filter(t->bookedTableService.existsById(t.getId()))//lay tat ca ca ban dat ton tai
+            .peek((t)->{
+                if(t.getState()==ApplicationConfig.NOT_FOUND_STATE){//ban khong ton tai
+                    bookedTableService.delete(t.getId());
+                }else{//ban ton tai
+                    BookedTable bookedTable = new BookedTable();
+                    BeanUtils.copyProperties(t, bookedTable);
+                    bookedTableService.update(bookedTable);
+                }
+            })
+            .filter(t->t.getState()!=ApplicationConfig.NOT_FOUND_STATE)//lay cac ban co the dat dau khi cap nhat
+            .collect(Collectors.toList());
+        bookingResponse.setDeposits(getDepositsBooking(bookingResponse));
+        if(bookedTableSuccess==null || bookedTableSuccess.size()<=0)
+            bookingRepository.deleteById(bookingResponse.getId());
+        else{
+            bookingRepository.updateState(bookingResponse.getId(), ApplicationConfig.WATING_STATE);
+            bookingRepository.updateDeposits(bookingResponse.getId(), bookingResponse.getDeposits());
+        }
+        // if order error
+        // bookingKafkaTemplate.send("notiOrder",bookingResponse);
+    }
+    private float getDepositsBooking(BookingResponseDTO bookingResponseDTO){
+        return 100000;
+    }
+
+    @Transactional
+    public void addDishToBooking(Long bookingId, List<BookedDish> dishs) throws Exception{
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if(booking.getState()==ApplicationConfig.DEFAULT_STATE)
             throw new Exception("Phiếu đặt bàn đang được xử lý, vui lòng đặt món sau khi xử lý xong");
@@ -81,45 +125,6 @@ public class BookingService {
         bookingKafkaTemplate.send("checkBookedDish",bookingResponseDTO);
     }
 
-    public Booking getByID(Long id){
-        return bookingRepository.findById(id).orElse(null);
-    }
-
-    public Page<Booking> getByCustemerId(long custemerId,Pageable pageable){
-        return bookingRepository.getAllByCustomerId(custemerId, pageable);
-    }
-
-    public void removeById(long id){
-        bookingRepository.deleteById(id);
-    }
-    
-    @Transactional
-    public void checkAndUpdateBooking(BookingResponseDTO bookingResponse){
-        // neu don hang khong ton tai
-        if(!bookingRepository.existsById(bookingResponse.getId())) return;
-        //lay danh sach ban co the dat duoc(state != 0) va cap nhat trang thai cua ban, va xoa cac ban khong ton tai
-        bookingResponse.setDeposits(100000);
-        List<BookedTableResponseDTO> bookedTableSuccess = bookingResponse.getBookedTables().stream()
-            .filter(t->bookedTableService.existsById(t.getId()))//lay tat ca ca ban dat ton tai
-            .peek((t)->{
-                if(t.getState()==ApplicationConfig.NOT_FOUND_STATE){//ban khong ton tai
-                    bookedTableService.delete(t.getId());
-                }else{//ban ton tai
-                    bookedTableService.updateState(t.getId(), t.getState());
-                }
-            })
-            .filter(t->t.getState()!=ApplicationConfig.NOT_FOUND_STATE)//lay cac ban co the dat dau khi cap nhat
-            .collect(Collectors.toList());
-        if(bookedTableSuccess==null || bookedTableSuccess.size()<=0)
-            bookingRepository.deleteById(bookingResponse.getId());
-        else{
-            bookingRepository.updateState(bookingResponse.getId(), ApplicationConfig.WATING_STATE);
-            bookingRepository.updateDeposits(bookingResponse.getId(), bookingResponse.getDeposits());
-        }
-        // if order error
-        // bookingKafkaTemplate.send("notiOrder",bookingResponse);
-    }
-
     @Transactional
     public void checkAndUpdateDish(Booking booking){
         // neu don hang khong ton tai
@@ -133,14 +138,8 @@ public class BookingService {
         });
     }
 
-    public void delete(Long id){
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        if(booking==null) throw new NotfoundException("Đơn hàng không tồn tại");
-        bookingRepository.delete(booking);
-    }
 
-
-    // 
+    // EMPLOYEE
     public List<Booking> getAllByFromAndTo(Date from, Date to, Pageable pageable){
         List<Booking> list = bookingRepository.findAllByFromAndTo(from, to, pageable).toList();
         return list;
@@ -153,8 +152,9 @@ public class BookingService {
             throw new Exception("Phiếu đã được đóng");
         bookedDishRepository.deleteAll(booking.getDishs());
         booking.getBookedTables().stream().forEach((t)->{
-            // update state booked table
-            bookedTableRepository.updateState(t.getId(), ApplicationConfig.CANCEL_STATE);
+            // update state booked 
+            t.setState(ApplicationConfig.CANCEL_STATE);
+            bookedTableService.update(t);
         });
         bookingRepository.updateState(bookingId, ApplicationConfig.CANCEL_STATE);
     }
@@ -171,12 +171,14 @@ public class BookingService {
         
         // update state booked table
         booking.getBookedTables().stream().forEach((t)->{
-            bookedTableRepository.updateState(t.getId(), ApplicationConfig.OK_STATE);
+            t.setState(ApplicationConfig.OK_STATE);
+            bookedTableService.update(t);
         });
         // update state booked dish
         if(!booking.getDishs().isEmpty()){
             booking.getDishs().stream().forEach((d)->{
-                bookedDishRepository.updateState(d.getId(), ApplicationConfig.OK_STATE);
+                d.setState(ApplicationConfig.OK_STATE);
+                bookedDishService.update(d);
             });
         }
         bookingRepository.updateState(bookingId, ApplicationConfig.OK_STATE);

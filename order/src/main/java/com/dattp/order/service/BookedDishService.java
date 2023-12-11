@@ -15,10 +15,6 @@ public class BookedDishService {
     @Autowired
     private BookedDishRepository bookedDishRepository;
 
-    public boolean updateState(Long id, Integer state){
-        return bookedDishRepository.updateState(id, state)>0;
-    }
-
     public void removeById(long id){
         bookedDishRepository.deleteById(id);
     }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Thanh toán đơn hàng | Lỗi</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/e7c3a3eb40.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="vh-100 d-flex justify-content-center align-items-center" th:object="${data}">
+            <div class="col-md-8">
+                <div th:if="${data.code!=200}" class="border border-3 border-danger"></div>
+                <div th:if="${data.code==200}" class="border border-3 border-success"></div>
+                <div class="card bg-white shadow p-5">
+                    <div class="mb-4 text-center">
+                        <i th:if="${data.code!=200}" class="fa-regular fa-circle-xmark fa-beat" style="color: #f43434;font-size:75px;"></i>
+                        <i th:if="${data.code==200}" class="fa-solid fa-circle-check fa-beat" style="color: #36d339;font-size:75px;"></i>
+                    </div>
+                    <div class="text-center">
+                        <h1 th:if="${data.code!=200}">Lỗi!</h1>
+                        <h1 th:if="${data.code==200}">Thành công!</h1>
+                        <div class="col-md-12" style="margin:30px auto;">
+                            <div class="row">
+                                <div class="col-md-4" style="text-align:left;">
+                                    <p th:utext="${'Mã đơn hàng: #'+data.BookingId}"></p>
+                                </div>
+                                <div class="col-md-4" style="text-align:left;">
+                                    <p th:utext="${'Tổng tiền: ' + data.amount}"></p>
+                                </div>
+                                <div class="col-md-4" style="text-align:left;">
+                                    <p th:utext="${'Ngày: ' + data.date}"></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4" style="text-align:left;">
+                                    <p th:utext="${'Mã ngân hàng: ' + data.bankCode}"></p>
+                                </div>
+                                <div class="col-md-4" style="text-align:left;">
+                                    <p th:utext="${'Mã GD VNPAY: ' + data.tranCode}"></p>
+                                </div>
+                                <div class="col-md-4" style="text-align:left;">
+                                    <p th:utext="${'Mã GD ngân hàng: '+ data.bankTranCode}"></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="text-align:left;">
+                                    <p th:utext="${'Ghi chú: ' + data.message}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

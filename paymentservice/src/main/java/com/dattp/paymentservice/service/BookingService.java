@@ -17,7 +17,7 @@ public class BookingService {
     }
 
     public Booking getById(long bookingId){
-        return bookingRepository.findById(bookingId).orElseThrow();
+        return bookingRepository.findById(bookingId).orElse(null);
     }
 
     @Transactional

@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -23,11 +22,4 @@ public interface BookedTableRepository extends JpaRepository<BookedTable,Long>{
     @Query(value="SELECT t.from_,t.to_ FROM BOOKED_TABLE t "
     +"WHERE NOT (:to_<t.from_ OR t.to_<:from_) AND t.table_id=:table_id "+" AND t.state!="+ApplicationConfig.CANCEL_STATE, nativeQuery = true)
     public List<Object[]> findPeriodRent(@Param("from_") Date from, @Param("to_")Date to, @Param("table_id") Long tableID);
-
-    // cap nhat trang thai cua ban dat
-    @Modifying
-    @Query(value="UPDATE BOOKED_TABLE t "
-    +"SET t.state = :state "
-    +"WHERE t.id = :id ", nativeQuery = true)
-    public int updateState(@Param("id") Long id, @Param("state") Integer state);
 }
