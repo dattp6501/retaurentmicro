@@ -3,8 +3,10 @@ package com.dattp.productservice.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -100,8 +102,19 @@ public class DishService {
         return dishRepository.findAll(pageable);
     }
     
-    public Dish getById(long id){
-        return dishRepository.findById(id).orElse(null);
+    public Dish getById(long id, boolean isShowAllDiscount){
+        Dish dish = dishRepository.findById(id).orElse(null);
+        if(dish==null) return null;
+        if(!isShowAllDiscount) return dish;
+        if(dish.getDiscounts()!=null && !dish.getDiscounts().isEmpty()){
+            final Date currentDate = new Date();
+            dish.setDiscounts(
+                dish.getDiscounts().stream()
+                .filter(dc->(0<=dc.getFrom().compareTo(currentDate)&&currentDate.compareTo(dc.getTo())<=0))
+                .collect(Collectors.toList())
+            );
+        }
+        return dish;
     }
 
     @Transactional

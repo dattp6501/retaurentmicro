@@ -27,4 +27,7 @@ public class ApplicationConfig {
 		return new RestTemplate();
 	}
 
+	public static String HOST_ORDER_SERVICE = "http://localhost:9003";
+	public static String HOST_AUTH_SERVICE = "http://localhost:9000";
+
 }

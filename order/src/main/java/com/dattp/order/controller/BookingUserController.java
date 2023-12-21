@@ -47,7 +47,7 @@ public class BookingUserController {
 
     @PostMapping(value="/save")
     @RolesAllowed({"ROLE_ORDER_NEW"})
-    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid BookingRequestDTO bookingR) throws BadRequestException {
+    public ResponseEntity<ResponseDTO> save(@RequestBody @Valid BookingRequestDTO bookingR) throws Exception {
         //check input 
         if(bookingR.getFrom().compareTo(bookingR.getTo())>=0)
             throw new BadRequestException("Thời gian bắt đầu phải nhỏ hơn thòi gian kết thúc");
@@ -58,7 +58,7 @@ public class BookingUserController {
         booking.setState(ApplicationConfig.DEFAULT_STATE);
         booking.setPaid(false);
         booking.setCustomerId(
-            Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName())
+            Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0])
         );
         booking.setDate(new Date());
         booking.setDeposits(0);
@@ -122,7 +122,7 @@ public class BookingUserController {
     public ResponseEntity<ResponseDTO> getByCustemerId(Pageable pageable){
         List<BookingResponseDTO> list = new ArrayList<>();
         bookingService.getByCustemerId(
-            Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), //get id user
+            Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0]), //get id user
             pageable
         ).getContent().stream().forEach((bk)->{
             BookingResponseDTO bkDTO = new BookingResponseDTO();
@@ -148,7 +148,9 @@ public class BookingUserController {
     @GetMapping("/get_booking_detail/{booking_id}")
     @RolesAllowed({"ROLE_ORDER_ACCESS"})
     public ResponseEntity<ResponseDTO> getBookingDetail(@PathVariable("booking_id") Long id) throws Exception{
-        Long userId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        Long userId = Long.parseLong(
+            SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0]
+        );;
         BookingResponseDTO bkResp = new BookingResponseDTO();
         Booking booking = bookingService.getByID(id);
         if(userId.longValue() != booking.getCustomerId()) throw new Exception("Bạn không có lịch đặt này"); 

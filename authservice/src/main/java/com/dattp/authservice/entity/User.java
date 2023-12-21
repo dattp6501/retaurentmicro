@@ -2,6 +2,7 @@ package com.dattp.authservice.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -41,12 +42,16 @@ public class User implements UserDetails{
     @Column(name = "mail", nullable = false, unique = true)
     private String mail;
 
-    public User(Long id, String fullname, String username, String password, String mail, List<Role> roles) {
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    public User(Long id, String fullname, String username, String password, String mail, Date createdAt, List<Role> roles) {
         this.id = id;
         this.fullname = fullname;
         this.username = username;
         this.password = password;
         this.mail = mail;
+        this.createdAt = createdAt; 
         this.roles = roles;
     }
 

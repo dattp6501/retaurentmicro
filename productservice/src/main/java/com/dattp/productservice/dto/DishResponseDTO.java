@@ -16,16 +16,16 @@ public class DishResponseDTO {
 
     private float price;
 
+    private float discountAmount;
+
     private List<CommentDishResponseDTO> comments;
 
-    private String description;
+    private DiscountDishResponseDTO discount;
 
-    public DishResponseDTO(int state, long id, String name, float price, String description) {
-        this.state = state;
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.description = description;
+    private String description;
+    
+    public void setDiscount(DiscountDishResponseDTO discount){
+        this.discount =discount;
     }
 
     public DishResponseDTO() {

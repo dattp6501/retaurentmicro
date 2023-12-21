@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dattp.productservice.dto.CommentDishRequestDTO;
 import com.dattp.productservice.dto.CommentDishResponseDTO;
+import com.dattp.productservice.dto.DiscountDishResponseDTO;
 import com.dattp.productservice.dto.DishResponseDTO;
 import com.dattp.productservice.dto.ResponseDTO;
 import com.dattp.productservice.entity.CommentDish;
@@ -36,11 +38,18 @@ public class DishControllerUser {
     private DishService dishService;
 
     @GetMapping("/get_dish")
-    public ResponseEntity<ResponseDTO> getDishs(Pageable pageable){//page=?&size=?
+    public ResponseEntity<ResponseDTO> getDishs(@RequestHeader(value="access_token", required=false) String accessToken, Pageable pageable){//page=?&size=?
         List<DishResponseDTO> list = new ArrayList<>();
         dishService.getDishs(pageable).getContent().forEach((d)->{
             DishResponseDTO dishResp = new DishResponseDTO();
             BeanUtils.copyProperties(d, dishResp);
+            // discount
+            if(d.getDiscountActive()!=null){
+                DiscountDishResponseDTO ddr = new DiscountDishResponseDTO();
+                BeanUtils.copyProperties(d.getDiscountActive(), ddr);
+                dishResp.setDiscount(ddr);
+            }
+            dishResp.setDiscountAmount(d.getAmountDiscount());
             list.add(dishResp);
         });
         return ResponseEntity.ok().body(
@@ -59,7 +68,12 @@ public class DishControllerUser {
         CommentDish CD = new CommentDish();
         BeanUtils.copyProperties(CDR, CD);
         CD.setDate(new Date());
-        CD.setUser(new User(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), null));
+        CD.setUser(
+            new User(
+                Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0]), 
+                SecurityContextHolder.getContext().getAuthentication().getName().split("///")[2]
+            )
+        );
         if(!dishService.addComment(CDR.getDishId(), CD)) throw new Exception("Không đánh giá được sản phẩm");
         return ResponseEntity.ok().body(
             new ResponseDTO(
@@ -74,7 +88,7 @@ public class DishControllerUser {
     @RequestMapping("/get_dish_detail/{dish_id}")
     public ResponseEntity<ResponseDTO> getDishDetail(@PathVariable("dish_id") long id){
         DishResponseDTO dishResp = new DishResponseDTO();
-        Dish dish = dishService.getById(id);
+        Dish dish = dishService.getById(id, false);
         BeanUtils.copyProperties(dish, dishResp);
         if(!dish.getCommentDishs().isEmpty()){
             dishResp.setComments(new ArrayList<>());
@@ -86,6 +100,7 @@ public class DishControllerUser {
                 dishResp.getComments().add(cr);
             });
         }
+        dishResp.setDiscountAmount(dish.getAmountDiscount());
         return ResponseEntity.ok().body(
             new ResponseDTO(
                 HttpStatus.OK.value(), 

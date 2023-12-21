@@ -5,20 +5,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
 
+import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dattp.order.config.ApplicationConfig;
 import com.dattp.order.dto.BookedDishResponseDTO;
 import com.dattp.order.dto.BookedTableResponseDTO;
 import com.dattp.order.dto.BookingResponseDTO;
+import com.dattp.order.dto.PeriodTimeResponseDTO;
 import com.dattp.order.entity.BookedDish;
 import com.dattp.order.entity.BookedTable;
 import com.dattp.order.entity.Booking;
@@ -41,16 +44,29 @@ public class BookingService {
     private BookedDishService bookedDishService;
     @Autowired
     private KafkaTemplate<String,BookingResponseDTO> bookingKafkaTemplate;
+    @Autowired
+    private RedisTemplate<Object, Object> template;
+    @Autowired
+    private RedisService redisService;
 
     @Transactional
-    public Booking save(Booking booking){
+    public Booking save(Booking booking) throws Exception{
         booking.getBookedTables().forEach(b->{
             if(!bookedTableService.isFreetime(b)){//ban da duoc thue trong khoang thoi gian nay
                 throw new BadRequestException("Bàn name = "+b.getName()+" đã được thuê trong khoảng thòi gian này");
             }
         });
         Booking newBooking = bookingRepository.save(booking);
-        cartService.deleteAllTable(newBooking.getCustomerId());
+        // delete table in cart
+        if(!cartService.deleteAllTable(newBooking.getCustomerId())) throw new RuntimeException("Không xóa được bàn trong giỏ hang");
+        // update statictis
+        String json = (String) template.opsForValue().get("statictisOrder");
+        JSONObject statictisOrder = new JSONObject(json);
+        int total = statictisOrder.getInt("total")+1;
+        statictisOrder.put("total", total);
+        int wait = statictisOrder.getInt("wait")+1;
+        statictisOrder.put("wait", wait);
+        template.opsForValue().set("statictisOrder", statictisOrder.toString());
         return newBooking;
     }
 
@@ -82,6 +98,9 @@ public class BookingService {
                     BookedTable bookedTable = new BookedTable();
                     BeanUtils.copyProperties(t, bookedTable);
                     bookedTableService.update(bookedTable);
+                    // add period booked table on redis
+                    String keyPeriodbookedTable = String.format("table:%d:period_booked",t.getTableId());
+                    redisService.addDataToList(keyPeriodbookedTable, new PeriodTimeResponseDTO(bookingResponse.getFrom(), bookingResponse.getTo()));
                 }
             })
             .filter(t->t.getState()!=ApplicationConfig.NOT_FOUND_STATE)//lay cac ban co the dat dau khi cap nhat
@@ -104,14 +123,16 @@ public class BookingService {
     public void addDishToBooking(Long bookingId, List<BookedDish> dishs) throws Exception{
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if(booking.getState()==ApplicationConfig.DEFAULT_STATE)
-            throw new Exception("Phiếu đặt bàn đang được xử lý, vui lòng đặt món sau khi xử lý xong");
+            throw new RuntimeException("Phiếu đặt bàn đang được xử lý, vui lòng đặt món sau khi xử lý xong");
         for(BookedDish bd: dishs){//set booking for dish
             bd.setBooking(booking);
             // dish was placed on the menu
-            if(booking.getDishs().contains(bd)) throw new Exception(bd.getName() + "Đã có trong thực đơn");
+            if(booking.getDishs().contains(bd)) throw new RuntimeException(bd.getName() + "Đã có trong thực đơn");
         }
         bookedDishRepository.saveAll(dishs);
-        Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());//get id user from access_token
+        Long id = Long.parseLong(
+            SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0]
+        );;//get id user from access_token
         cartService.deleteAllDish(id);//delete all dish in cart of user
         // send message to check
         BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
@@ -149,7 +170,7 @@ public class BookingService {
     public void cancelBooking(Long bookingId) throws Exception{
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if(booking.getState()!=ApplicationConfig.CANCEL_STATE)
-            throw new Exception("Phiếu đã được đóng");
+            throw new RuntimeException("Phiếu đã được đóng");
         bookedDishRepository.deleteAll(booking.getDishs());
         booking.getBookedTables().stream().forEach((t)->{
             // update state booked 
@@ -157,6 +178,10 @@ public class BookingService {
             bookedTableService.update(t);
         });
         bookingRepository.updateState(bookingId, ApplicationConfig.CANCEL_STATE);
+        JSONObject statictisOrder = new JSONObject(template.opsForValue().get("statictisOrder"));
+        int cancel = statictisOrder.getInt("cancel")+1;
+        statictisOrder.put("cancel", cancel);
+        template.opsForValue().set("statictisOrder", statictisOrder.toString());
     }
 
     @Transactional
@@ -164,10 +189,10 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         //If the order is not check order
         if(booking.getState()==ApplicationConfig.DEFAULT_STATE)
-            throw new Exception("Hệ thống đang kiểm tra phiếu đặt này");
+            throw new RuntimeException("Hệ thống đang kiểm tra phiếu đặt này");
         //If the order is not waiting
         if(booking.getState()!=ApplicationConfig.WATING_STATE)
-            throw new Exception("Phiếu đã được xử lý");
+            throw new RuntimeException("Phiếu đã được xử lý");
         
         // update state booked table
         booking.getBookedTables().stream().forEach((t)->{
@@ -203,6 +228,10 @@ public class BookingService {
         }
         bookingKafkaTemplate.send("createPaymentOrder",bkResp);//send info order need payment
         bookingKafkaTemplate.send("notiOrder",bkResp);//send notification order success, required payment
+        JSONObject statictisOrder = new JSONObject(template.opsForValue().get("statictisOrder"));
+        int confirm = statictisOrder.getInt("confirm")+1;
+        statictisOrder.put("confirm", confirm);
+        template.opsForValue().set("statictisOrder", statictisOrder.toString());
     }
 
     @Transactional

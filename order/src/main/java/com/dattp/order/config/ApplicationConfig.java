@@ -7,4 +7,5 @@ public class ApplicationConfig {
     public static final int OK_STATE = 1;//thanh cong
     public static final int WATING_STATE = 2;//dang cho xu ly
     public static final int CANCEL_STATE = 3;//bi huy
+
 }

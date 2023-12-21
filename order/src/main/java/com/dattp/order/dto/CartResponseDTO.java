@@ -10,8 +10,8 @@ import lombok.Setter;
 public class CartResponseDTO {
     private Long id;
     private Long userId;
-    private List<TableInCartResponseDTO> tables;
-    private List<DishInCartResponseDTO> dishs;
+    private List<TableInCartRequestDTO> tables;
+    private List<DishInCartRequestDTO> dishs;
     public CartResponseDTO() {
     }
 }

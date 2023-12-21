@@ -1,6 +1,7 @@
 package com.dattp.authservice;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,9 +36,9 @@ public class AuthserviceApplication{
 			Role roleProduct3 = roleService.saveRole(new Role(null, "ROLE_PRODUCT_UPDATE", true));
 			Role roleProduct4 = roleService.saveRole(new Role(null, "ROLE_PRODUCT_DELETE", true));
 			
-			User user1 = userService.saveUser(new User(null, "Khách hàng 1", "kh1", "1","kh1@gmail.com", new ArrayList<>()));
-			User user2 = userService.saveUser(new User(null, "manager", "manager", "manager","manager@gmail.com", new ArrayList<>()));
-			User user3 = userService.saveUser(new User(null, "admin", "admin", "admin","admin@gmail.com", new ArrayList<>()));
+			User user1 = userService.saveUser(new User(null, "Khách hàng 1", "kh1", "1","kh1@gmail.com", new Date(), new ArrayList<>())); 
+			User user2 = userService.saveUser(new User(null, "manager", "manager", "manager","manager@gmail.com", new Date(), new ArrayList<>()));
+			User user3 = userService.saveUser(new User(null, "admin", "admin", "admin","admin@gmail.com", new Date(), new ArrayList<>()));
 			// khach hang
 			userService.addRoleToUser(user1.getUsername(), roleProduct1.getName());
 			userService.addRoleToUser(user1.getUsername(), roleOrder1.getName());

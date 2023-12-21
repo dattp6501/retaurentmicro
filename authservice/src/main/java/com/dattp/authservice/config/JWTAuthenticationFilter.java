@@ -48,7 +48,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
             JWTVerifier jwtVerifier = JWT.require(algorithm).build();
             // giai ma
             DecodedJWT decodedJWT = jwtVerifier.verify(accessToken);
-            String username = decodedJWT.getSubject();
+            String tokenInfo = decodedJWT.getSubject();
             String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
             // chuyen ve dang chuan de xu ly
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -56,7 +56,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter{
                 authorities.add(new SimpleGrantedAuthority(role));
             });
             // neu nguoi dung hop le thi set thong tin cho security context
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,null, authorities);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(tokenInfo,null, authorities);
             /*
             {
                 "authentication": {

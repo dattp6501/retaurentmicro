@@ -103,7 +103,12 @@ public class TableControllerUser {
     public ResponseEntity<ResponseDTO> addComment(@RequestBody @Valid CommentTableRequestDTO CTR) throws Exception{
         CommentTable CT = new CommentTable();
         BeanUtils.copyProperties(CTR, CT);
-        CT.setUser(new User(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()), null));
+        CT.setUser(
+            new User(
+                Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0]), 
+                SecurityContextHolder.getContext().getAuthentication().getName().split("///")[1]
+            )
+        );
         if(!tableService.addComment(CTR.getTableId(), CT)) throw new Exception("Không đánh giá được sản phẩm");
         return ResponseEntity.ok().body(
             new ResponseDTO(

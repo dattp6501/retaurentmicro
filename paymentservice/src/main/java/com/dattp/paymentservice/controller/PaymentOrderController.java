@@ -113,8 +113,10 @@ public class PaymentOrderController {
     @GetMapping("/history_payment")
     @RolesAllowed("ROLE_ORDER_NEW")
     @ResponseBody
-    public ResponseEntity<ResponseDTO> hello(Pageable pageable){
-        long customerId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+    public ResponseEntity<ResponseDTO> historyPayment(Pageable pageable){
+        long customerId = Long.parseLong(
+            SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0]
+        );;
         List<HistoryPayment> list = historyPaymentService.getAllByCustomerId(customerId, pageable);
         return ResponseEntity.ok().body(
             new ResponseDTO(HttpStatus.OK.value(), "Thành công", list)

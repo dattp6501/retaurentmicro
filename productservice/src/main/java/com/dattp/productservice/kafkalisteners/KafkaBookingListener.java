@@ -1,11 +1,13 @@
 package com.dattp.productservice.kafkalisteners;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.dattp.productservice.config.ApplicationConfig;
+import com.dattp.productservice.dto.kafka.BookedDishRequestKafkaDTO;
 import com.dattp.productservice.dto.kafka.BookedTableRequestKafkaDTO;
 import com.dattp.productservice.dto.kafka.BookingRequestKafkaDTO;
 import com.dattp.productservice.entity.Dish;
@@ -41,16 +43,20 @@ public class KafkaBookingListener {
     // listen message checkBookedDish topic to check info dish
     @KafkaListener(topics="checkBookedDish", groupId="group1",containerFactory="factoryBooking")
     public void listenCheckBookedDishTopic(BookingRequestKafkaDTO bookingRequest){
-        bookingRequest.getDishs().forEach((bdRq)->{
-            Dish dishSrc = dishService.getById(bdRq.getDishId());
-            if(dishSrc!=null){
-                bdRq.setName(dishSrc.getName());
-                bdRq.setPrice(dishSrc.getPrice());
-                bdRq.setState(dishSrc.getState());
-            }else{
+        bookingRequest.setDiscount(0);
+        // check dish
+        for(BookedDishRequestKafkaDTO bdRq : bookingRequest.getDishs()){
+            // Get dish information and active discounts
+            Dish dishSrc = dishService.getById(bdRq.getDishId(), false);
+            if(dishSrc == null){
                 bdRq.setState(ApplicationConfig.NOT_FOUND_STATE);
+                continue;
             }
-        });
+            bdRq.setName(dishSrc.getName());
+            bdRq.setPrice(dishSrc.getPrice());
+            bdRq.setState(dishSrc.getState());
+            bookingRequest.setDiscount(bookingRequest.getDiscount()+dishSrc.getAmountDiscount());
+        }
         kafkaTemplateBooking.send("resultCheckBookedDish",bookingRequest);
     }
 }

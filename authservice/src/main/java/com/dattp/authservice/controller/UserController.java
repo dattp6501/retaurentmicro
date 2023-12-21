@@ -1,5 +1,7 @@
 package com.dattp.authservice.controller;
 
+import java.util.Date;
+
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
@@ -49,6 +51,7 @@ public class UserController {
     public ResponseEntity<ResponseDTO> register(@RequestBody @Valid UserRequestDTO userR){
         User newUser = new User();
         BeanUtils.copyProperties(userR, newUser);
+        newUser.setCreatedAt(new Date());
         // luu vao CSDL
         newUser = userService.saveUser(newUser);
         UserResponseDTO userResp = new UserResponseDTO();
@@ -67,8 +70,22 @@ public class UserController {
 
     @GetMapping
     @RolesAllowed({"ROLE_PRODUCT_ACCESS"})
-    @RequestMapping("/test")
-    public SecurityContext test(){
+    @RequestMapping("/profile")
+    public ResponseEntity<ResponseDTO> profile(){
+        Long userId = Long.parseLong(
+            SecurityContextHolder.getContext().getAuthentication().getName().split("///")[0]
+        );
+        User user = userService.getByID(userId);
+        UserResponseDTO userResp = new UserResponseDTO();
+        BeanUtils.copyProperties(user, userResp);
+        return ResponseEntity.ok().body(
+            new ResponseDTO(HttpStatus.OK.value(), "Thành công", userResp)
+        );
+    }
+
+    @GetMapping
+    @RequestMapping("/context")
+    public SecurityContext context(){
         return SecurityContextHolder.getContext();
     }
 }

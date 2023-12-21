@@ -86,7 +86,7 @@ public class DishControllerManager {
     @RolesAllowed({"ROLE_ADMIN","ROLE_PRODUCT_UPDATE","ROLE_PRODUCT_DELETE"})
     public ResponseEntity<ResponseDTO> getDishDetail(@PathVariable("dish_id") long id){
         DishResponseDTO dishResp = new DishResponseDTO();
-        Dish dish = dishService.getById(id);
+        Dish dish = dishService.getById(id, false);
         BeanUtils.copyProperties(dish, dishResp);
         return ResponseEntity.ok().body(
             new ResponseDTO(

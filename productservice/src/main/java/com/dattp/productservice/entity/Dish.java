@@ -1,9 +1,12 @@
 package com.dattp.productservice.entity;
 
+import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,16 +39,31 @@ public class Dish {
     @Column(name="description")
     private String description;
     
-    @OneToMany(mappedBy="dish")
+    @OneToMany(mappedBy="dish", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentDish> CommentDishs;
 
-    public Dish(long id, String name, float price, String description) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.description = description;
-    }
+    @OneToMany(mappedBy="dish", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DiscountDIsh> discounts;
 
     public Dish() {
+    }
+
+    public DiscountDIsh getDiscountActive(){
+        if(this.discounts==null || this.discounts.isEmpty()) return null;
+        // There is only 1 discount per period
+        final Date currentDate = new Date();
+        for(DiscountDIsh dc : this.discounts){
+            if(0>=dc.getFrom().compareTo(currentDate)&&currentDate.compareTo(dc.getTo())<=0){
+                return dc;
+            }
+        }
+        return null;
+    }
+    
+    public float getAmountDiscount(){
+        DiscountDIsh dc = getDiscountActive();
+        if(dc==null) return 0;
+        if(dc.getType().equals("%")) return this.price*dc.getValue()/100; 
+        return dc.getValue();
     }
 }

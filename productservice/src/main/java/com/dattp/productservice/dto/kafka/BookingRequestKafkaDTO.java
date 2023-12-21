@@ -18,6 +18,7 @@ public class BookingRequestKafkaDTO {
     private long CustomerId;
 
     private String custemerFullname;
+    private float discount;
     
     @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private Date date;

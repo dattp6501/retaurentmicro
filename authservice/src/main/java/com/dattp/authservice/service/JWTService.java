@@ -1,5 +1,6 @@
 package com.dattp.authservice.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -25,9 +26,10 @@ public class JWTService {
     private long EXPIRATION_REFRESHTOKEN;
 
     public String generateAccessToken(User user, Collection<SimpleGrantedAuthority> authorities){
+        SimpleDateFormat format = new SimpleDateFormat("HHmmssddMMyyyy");
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
         return JWT.create()
-            .withSubject(user.getId()+"")
+            .withSubject(user.getId()+"///"+user.getUsername()+"///"+format.format(user.getCreatedAt()))
             .withExpiresAt(new Date(System.currentTimeMillis()+EXPIRATION_ACCESSTOKEN))
             .withClaim(
                 "roles", 
@@ -41,9 +43,10 @@ public class JWTService {
     }
 
     public String generateRefreshToken(User user, Collection<SimpleGrantedAuthority> authorities){
+        SimpleDateFormat format = new SimpleDateFormat("HHmmssddMMyyyy");
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
         return JWT.create()
-            .withSubject(user.getUsername())
+            .withSubject(user.getId()+"///"+user.getUsername()+"///"+format.format(user.getCreatedAt()))
             .withExpiresAt(new Date(System.currentTimeMillis()+EXPIRATION_REFRESHTOKEN))
             .sign(algorithm);
     }

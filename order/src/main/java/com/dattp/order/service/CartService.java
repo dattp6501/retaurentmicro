@@ -1,18 +1,18 @@
 package com.dattp.order.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.dattp.order.dto.CartResponseDTO;
+import com.dattp.order.dto.DishInCartRequestDTO;
+import com.dattp.order.dto.TableInCartRequestDTO;
 import com.dattp.order.entity.Cart;
-import com.dattp.order.entity.DishInCart;
-import com.dattp.order.entity.TableInCart;
 import com.dattp.order.exception.BadRequestException;
 import com.dattp.order.repository.CartRepository;
-import com.dattp.order.repository.DishInCartRepository;
-import com.dattp.order.repository.TableInCartRepository;
 
 @Service
 public class CartService {
@@ -20,10 +20,7 @@ public class CartService {
     private CartRepository cartRepository;
 
     @Autowired
-    private TableInCartRepository tableInCartRepository;
-
-    @Autowired
-    private DishInCartRepository dishInCartRepository;
+    private RedisService redisService;
 
     public Cart createCart(Cart cart){
         Cart cartSrc = cartRepository.findByUserId(cart.getUserId()).orElse(null);
@@ -31,56 +28,63 @@ public class CartService {
         return cartRepository.save(cart); 
     }
 
-    public Cart getById(Long userId){
+    public CartResponseDTO getById(Long userId){
         Cart cart = cartRepository.findByUserId(userId).orElse(null);
-        return cart;
+        if(cart==null) return null;
+        CartResponseDTO cartResponseDTO = new CartResponseDTO();
+        BeanUtils.copyProperties(cart, cartResponseDTO);
+        // table
+        String keyTable = String.format("cart:%d:table", userId);
+        List<Object> list = redisService.getAllElementFromListUseHash(keyTable);
+        if(list!=null){
+            cartResponseDTO.setTables(new ArrayList<>());
+            list.forEach((e)->{
+                cartResponseDTO.getTables().add((TableInCartRequestDTO)e);
+            });
+        }
+        // dish
+        String keyDish = String.format("cart:%d:dish", userId);
+        list = redisService.getAllElementFromListUseHash(keyDish);
+        if(list!=null){
+            cartResponseDTO.setDishs(new ArrayList<>());
+            list.forEach((e)->{
+                cartResponseDTO.getDishs().add((DishInCartRequestDTO)e);
+            });
+        }
+        return cartResponseDTO;
     }
 
-    @Transactional
-    public void addTable(Long userId, TableInCart tableInCart) throws Exception{
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
-        if(cart==null) throw new Exception("Giỏ hàng của người dùng không tồn tại");
-        List<Object[]> list = tableInCartRepository.findByTableIdAndCartId(cart.getId(), tableInCart.getTableId());
-        if(!list.isEmpty()) 
-            throw new BadRequestException("Bàn đã tồn tại trong danh sách");
-        tableInCart.setCart(cart);
-        tableInCartRepository.save(tableInCart);
+    public boolean addTable(Long userId, TableInCartRequestDTO req) throws Exception{
+        String keyTable = String.format("cart:%d:table", userId);
+        if(redisService.getElementFromListUseHash(keyTable, req.getTableId()) != null) throw new BadRequestException("Bàn đã tồn tại trong danh sách");
+        redisService.addElementToListUseHash(keyTable, req.getTableId(), req);
+        return true;
     }
 
-    @Transactional
-    public int deleteTableInCart(Long userId, Long tableId){
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
-        return tableInCartRepository.deleteByTableIdAndCartId(cart.getId(), tableId);
+    public boolean deleteTableInCart(Long userId, TableInCartRequestDTO table){
+        String keyTable = String.format("cart:%d:table", userId);
+        return redisService.deleteElementFromListUseHash(keyTable, table.getTableId());
     }
 
-    @Transactional
-    public void deleteAllTable(Long userId){
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
-        tableInCartRepository.deleteAllTableByCartId(cart.getId());
+    public boolean deleteAllTable(Long userId){
+        String keyTable = String.format("cart:%d:table", userId);
+        return redisService.delete(keyTable);
     }
 
     // dish
-    @Transactional
-    public void addDishInCart(Long userId, DishInCart dishInCart) throws Exception{
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
-        if(cart==null) throw new Exception("Giỏ hàng của người dùng không tồn tại");
-        // check dish in cart
-        List<Object[]> list = dishInCartRepository.findByDishIdAndCartId(cart.getId(), dishInCart.getDishId());
-        if(!list.isEmpty())
-            throw new BadRequestException("Món ăn đã được thêm vào danh sách");
-        dishInCart.setCart(cart);
-        dishInCartRepository.save(dishInCart);
+    public boolean addDishInCart(Long userId, DishInCartRequestDTO req) throws Exception{
+        String keyDish = String.format("cart:%d:dish", userId);
+        if(redisService.getElementFromListUseHash(keyDish, req.getDishId())!=null) throw new BadRequestException("Món ăn đã được thêm vào danh sách");
+        return true;
     }
 
-    @Transactional
-    public void deleteDishInCart(Long dishInCartId){
-        dishInCartRepository.deleteById(dishInCartId);
+    public boolean deleteDishInCart(Long userId, DishInCartRequestDTO req){
+        String keyDish = String.format("cart:%d:dish", userId);
+        return redisService.deleteElementFromListUseHash(keyDish, req.getDishId());
     }
 
-    @Transactional
-    public void deleteAllDish(Long userId) throws Exception{
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
-        if(cart==null) throw new Exception("Giỏ hàng của người dùng không tồn tại");
-        dishInCartRepository.deleteAllDishByCartId(cart.getId());
+    public boolean deleteAllDish(Long userId){
+        String keyDish = String.format("cart:%d:dish", userId);
+        return redisService.delete(keyDish);
     }
 }
